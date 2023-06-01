@@ -1,8 +1,7 @@
 import numpy as np
-import unittest
 import math 
 
-from kinematics import *
+from pyros_math.kinematics import *
 
 class twist2D:
     def __init__(self,vx: velocity, vy: velocity, wz: velocity):
@@ -73,31 +72,4 @@ class transform2D:
         return transform2D(self.x - other.x, self.y - other.y, self.theta - other.theta)
 
 
-class TestTwist2DMethods(unittest.TestCase):
-    def test_twist_to_transform_straight_line(self):
-        twist = twist2D(velocity(5), velocity(0), 0)
-        time = seconds(1)
-        transform = twist.twist_to_transform(time)
-        self.assertAlmostEqual(transform.x.get(), 5)
-        self.assertAlmostEqual(transform.y.get(), 0)
-        self.assertAlmostEqual(transform.theta, 0)
 
-    def test_twist_to_transform_circular_path(self):
-        twist = twist2D(vx=velocity(0), vy=velocity(5), wz=math.pi/2)
-        transform = twist.twist_to_transform(seconds(1))
-
-        # The expected position would be (10/pi, 10/pi)
-        self.assertAlmostEqual(transform.x.get(), 3.183098861837907)
-        self.assertAlmostEqual(transform.y.get(), 3.183098861837907)
-
-    def test_twist_to_transform_zero_time(self):
-        twist = twist2D(velocity(5), velocity(0), math.pi/2)
-        time = seconds(0)
-        transform = twist.twist_to_transform(time)
-        self.assertAlmostEqual(transform.x.get(), 0)
-        self.assertAlmostEqual(transform.y.get(), 0)
-        self.assertAlmostEqual(transform.theta, 0)
-
-
-if __name__ == '__main__':
-    unittest.main()

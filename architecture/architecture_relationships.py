@@ -104,6 +104,7 @@ class Command(ABC):
             raise TypeError("next_command must be an instance of Command")
 
 
+
 class ParallelCommand(Command):
     def __init__(self, commands, name="Parallel Command"):
         # The list of commands to run in parallel
@@ -139,13 +140,16 @@ class Topic(Subscriber):
     Similarly, sensor topics can publish data 
     such as images from a camera, distance from an ultrasonic sensor, etc.
     '''
-    def __init__(self, name= "Abstract Topic"):
-        super().__init__(False, name)
+    def __init__(self, name= "Abstract Topic", is_sim=False):
+        super().__init__(is_sim, name)
         self.subscribers = []
         self.message_body = {}
         self.__current_time = time.time()
         self.__previous_time = time.time()
         self.delta_time_seconds = self.__current_time - self.__previous_time
+
+    def subscriber_periodic(self):
+        pass
 
     @abstractmethod
     def generate_messages_periodic(self):

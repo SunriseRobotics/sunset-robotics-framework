@@ -1,7 +1,5 @@
 from abc import ABC,abstractmethod
 import numpy as np
-import unittest
-import math 
 
 class state1D(ABC):
     def __init__(self) -> None:
@@ -139,70 +137,3 @@ class vec2:
 
 
 
-class TestStateMethods(unittest.TestCase):
-
-    def test_seconds(self):
-        self.assertEqual(seconds(5).seconds, 5)
-
-    def test_milliseconds(self):
-        self.assertAlmostEqual(milliseconds(5000).seconds, 5)
-
-    def test_microseconds(self):
-        self.assertAlmostEqual(microseconds(5000000).seconds, 5)
-
-    def test_tSeconds_add(self):
-        time1 = seconds(5)
-        time2 = seconds(7)
-        self.assertEqual((time1 + time2).seconds, 12)
-
-    def test_tSeconds_sub(self):
-        time1 = seconds(5)
-        time2 = seconds(7)
-        self.assertEqual((time2 - time1).seconds, 2)
-
-    def test_velocity_mul(self):
-        v = velocity(3)
-        self.assertEqual((v * 2).get(), 6)
-
-    def test_velocity_add(self):
-        v1 = velocity(3)
-        v2 = velocity(5)
-        self.assertEqual((v1 + v2).get(), 8)
-
-    def test_velocity_sub(self):
-        v1 = velocity(3)
-        v2 = velocity(5)
-        self.assertEqual((v2 - v1).get(), 2)
-
-    def test_position_mul(self):
-        p = position(3)
-        self.assertEqual((p * 2).get(), 6)
-
-    def test_position_add(self):
-        p1 = position(3)
-        p2 = position(5)
-        self.assertEqual((p1 + p2).get(), 8)
-
-    def test_position_sub(self):
-        p1 = position(3)
-        p2 = position(5)
-        self.assertEqual((p2 - p1).get(), 2)
-
-    def test_vec2_add(self):
-        v1 = vec2(position(1), position(2))
-        v2 = vec2(position(2), position(3))
-        v1.add(v2)
-        self.assertEqual(v1.x.get(), 3)
-        self.assertEqual(v1.y.get(), 5)
-    
-    def test_vec2_sub(self):
-        v1 = vec2(position(1), position(2))
-        v2 = vec2(position(2), position(3))
-        v1.sub(v2)
-        self.assertEqual(v1.x.get(), -1)
-        self.assertEqual(v1.y.get(), -1)
-    
-
-
-if __name__ == '__main__':
-    unittest.main()
