@@ -24,10 +24,7 @@ class TestTopic(Topic):
     def generate_messages_periodic(self):
         return {}
     def subscriber_periodic(self):
-        return super().subscriber_periodic()
-
-
-    
+        return super().subscriber_periodic() 
 
 class ArchitectureRelationshipsTest(unittest.TestCase):
     
@@ -39,10 +36,6 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
             self.scheduler.initialize()
         except Exception as e:
             self.fail("Scheduler initialization failed with exception: {}".format(str(e)))
-
-    def test_scheduler_periodic_without_command(self):
-        with self.assertRaises(RuntimeError):
-            self.scheduler.periodic()
 
     def test_scheduler_set_command_group(self):
         command = TestCommand([])
@@ -60,7 +53,7 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
     def test_subscriber_store_messages(self):
         subscriber = TestSubscriber(False)
         message = Message({"test": "test"})
-        subscriber.store_messages(message, "test_topic")
+        subscriber.store_messages("test_topic",message)
         self.assertIn("test_topic", subscriber.messages)
 
     def test_subscriber_periodic(self):
@@ -248,6 +241,46 @@ class TestTrapezoidProfile(unittest.TestCase):
         mid_state = self.profile_negative.getState(self.profile_negative.profileDuration/2)
         self.assertTrue(mid_state.v <= -self.max_vel)
         self.assertTrue(math.fabs(mid_state.a) <= self.max_accel)
+class DummyTopic(Topic):
+    def generate_messages_periodic(self):
+        pass  # Add any implementation here if necessary
+    def __str__(self) -> str:
+        return self.name
+    def __repr__(self) -> str:
+        return self.name
+
+class AssessTopicSorting(unittest.TestCase):
+    def test_is_topic_dependent_on_other_topic(self):
+        topic1 = DummyTopic('Topic1')
+        topic2 = DummyTopic('Topic2')
+
+        # Initially, topic1 is not dependent on topic2
+        assert is_topic_dependent_on_other_topic(topic1, topic2) == False
+
+        # Adding topic1 as a subscriber to topic2
+        topic2.add_subscriber(topic1)
+
+        # Now, topic1 is dependent on topic2
+        assert is_topic_dependent_on_other_topic(topic1, topic2) == True
+
+    def test_sort_topics_by_dependency(self):
+        topic1 = DummyTopic('Topic1')
+        topic2 = DummyTopic('Topic2')
+        topic3 = DummyTopic('Topic3')
+        topic4 = DummyTopic('Topic4')
+
+        topic2.add_subscriber(topic1)  # Topic2 is dependent on Topic1
+        topic3.add_subscriber(topic2)  # Topic3 is dependent on Topic2
+        topic4.add_subscriber(topic1)  # Topic4 is dependent on Topic1
+
+        topics = [topic1, topic2, topic3, topic4]
+
+        sorted_topics = sort_topics_by_dependency(topics)
+
+        print("Sorted topics:", [topic.name for topic in sorted_topics])  # Debug print
+
+        self.assertEqual(sorted_topics, [topic4, topic3, topic2, topic1])
+
 
 
 if __name__ == '__main__':

@@ -3,22 +3,25 @@ from architecture.scheduler import Scheduler
 
 
 if __name__ == "__main__":
-    motor = Motor(False)
-    velocity_pid = VelocityPID(False)
-    motor_velocity = MotorVelocity(False)
-    reference_velocity = ReferenceVelocity(False, reference_velocity=1)
+    motor = Motor(is_sim = False)
+    velocity_pid = VelocityPID(is_sim =False)
+    motor_velocity = MotorVelocity(is_sim =False)
+    reference_velocity = ReferenceVelocity(is_sim =False, reference_velocity=1)
     # set relationships
     reference_velocity.add_subscriber(velocity_pid)
     motor_velocity.add_subscriber(velocity_pid)
     velocity_pid.add_subscriber(motor)
     # set commands
-    command_velocity = CommandVelocity(False, reference_velocity, reference_velocity=1)
+    command_velocity = CommandVelocity(reference_velocity, reference_velocity=1)
     # set scheduler
     scheduler = Scheduler()
+    
     scheduler.set_command_group(command_velocity)
+    scheduler.add_subscribers(motor)
+    scheduler.add_topics(reference_velocity, motor_velocity, velocity_pid)
     scheduler.initialize()
     # run scheduler
-    for i in range(100):
+    for i in range(30):
         scheduler.periodic()
         print("Motor Voltage: {}".format(motor.voltage_hardware))
         print("Reference Velocity: {}".format(reference_velocity.reference_velocity))

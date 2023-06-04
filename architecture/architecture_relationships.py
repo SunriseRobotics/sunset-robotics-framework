@@ -1,5 +1,7 @@
 from abc import ABC,abstractmethod
 import time
+import json
+
 
 class Subscriber(ABC):
     '''
@@ -49,7 +51,7 @@ class Subscriber(ABC):
         '''
         self.subscriber_periodic()
 
-    def store_messages(self, message: 'Message', topic_name: str):
+    def store_messages(self, topic_name: str, message: 'Message'):
         self.messages[topic_name] = message
 
 
@@ -63,6 +65,11 @@ class Message:
         self.message = message
         self.time_stamp = time.time()
 
+    def __str__(self) -> str:
+        return f"Message: {json.dumps(self.message)} at time {self.time_stamp}"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 class Command(ABC):
     def __init__(self, subscribers: list):
@@ -102,7 +109,6 @@ class Command(ABC):
                 last_command.next_command = next_command
         else:
             raise TypeError("next_command must be an instance of Command")
-
 
 
 class ParallelCommand(Command):
@@ -147,6 +153,11 @@ class Topic(Subscriber):
         self.__current_time = time.time()
         self.__previous_time = time.time()
         self.delta_time_seconds = self.__current_time - self.__previous_time
+        # when true, if we are simulating, we will publish the message that was in the log file instead of generating a new one
+        # important if this topic is just used for reading data from a physical sensor that the simulation does not have access to read.  
+        # should be kept false if the topic can be simulated or is calculated based on data from other topics.  Odometry and PID for example SHOULD be simulated
+        self.replace_message_with_log = False
+
 
     def subscriber_periodic(self):
         pass
@@ -162,13 +173,14 @@ class Topic(Subscriber):
         '''
         pass
 
-    def publish_periodic(self):
+    def publish_periodic(self) -> Message:
         self.__current_time = time.time()
         self.delta_time_seconds = self.__current_time - self.__previous_time
         self.message_body = self.generate_messages_periodic()
         self.__previous_time = self.__current_time 
         msg = Message(self.message_body)
         self.notify_subscribers(msg)
+        return msg, self.__current_time, self.delta_time_seconds
 
     def notify_subscribers(self, msg: Message):
         for sub in self.subscribers:
@@ -176,3 +188,6 @@ class Topic(Subscriber):
 
     def add_subscriber(self, sub: Subscriber):
         self.subscribers.append(sub)
+
+    def __str__(self) -> str:
+        return f"Topic: {self.name} with message {self.message_body}"
