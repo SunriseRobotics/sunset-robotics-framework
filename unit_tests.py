@@ -1,6 +1,7 @@
 from pyros_math.kinematics import * 
 from pyros_math.geometry import *
 from pyros_math.TrapezoidProfile import *
+from pyros_math.graph_theory import *
 from architecture.scheduler import *
 from architecture.architecture_relationships import *
 import unittest
@@ -275,12 +276,153 @@ class AssessTopicSorting(unittest.TestCase):
 
         topics = [topic1, topic2, topic3, topic4]
 
-        sorted_topics = sort_topics_by_dependency(topics)
+        sorted_topics = dependecy_sort(topics)
 
         print("Sorted topics:", [topic.name for topic in sorted_topics])  # Debug print
 
         self.assertEqual(sorted_topics, [topic4, topic3, topic2, topic1])
 
+
+class AssessGraphModule(unittest.TestCase):
+    def test_find_connected_subgraphs(self):
+        topic1 = DummyTopic("Topic1")
+        topic2 = DummyTopic("Topic2")
+        topic3 = DummyTopic("Topic3")
+        topic4 = DummyTopic("Topic4")
+        topic5 = DummyTopic("Topic5")
+        topic6 = DummyTopic("Topic6")
+        topic7 = DummyTopic("Topic7")
+
+
+        # we have two connected subgraphs
+
+        topic1.add_subscriber(topic2)
+        topic1.add_subscriber(topic3)
+        topic1.add_subscriber(topic7)
+
+        topic4.add_subscriber(topic5)
+        topic4.add_subscriber(topic6)
+
+        predicted_group_a = [topic1, topic2, topic3, topic7]
+        predicted_group_b = [topic4, topic5, topic6]
+
+
+        topics = [topic1,topic2,topic3,topic4,topic5,topic6,topic7]
+
+        subgraphs = find_connected_subgraphs(topics)
+
+        # there should be two subgraphs
+        assert len(subgraphs) == 2
+        # the subgraphs should be the same as the predicted subgraphs
+        assert subgraphs[0] == predicted_group_a
+        assert subgraphs[1] == predicted_group_b
+
+    def test_cycle_detection_no_cycle_1(self):
+        topic1 = DummyTopic("Topic1")
+        topic2 = DummyTopic("Topic2")
+        topic3 = DummyTopic("Topic3")
+        topic7 = DummyTopic("Topic7")
+
+        topic1.add_subscriber(topic2)
+        topic1.add_subscriber(topic3)
+        topic1.add_subscriber(topic7)
+
+        topics = [topic1,topic2,topic3,topic7]
+
+        is_cycle = is_cycle_present(topics)
+
+        assert is_cycle == False
+
+    def test_cycle_detection_no_cycle_2(self):
+        topic1 = DummyTopic("Topic1")
+        topic2 = DummyTopic("Topic2")
+        topic3 = DummyTopic("Topic3")
+        topic7 = DummyTopic("Topic7")
+
+        topic1.add_subscriber(topic2)
+        topic2.add_subscriber(topic3)
+        topic3.add_subscriber(topic7)
+
+
+        topics = [topic1,topic2,topic3,topic7]
+
+        is_cycle = is_cycle_present(topics)
+
+        assert is_cycle == False
+
+    def test_cycle_detection_cycle_1(self):
+        topic1 = DummyTopic("Topic1")
+        topic2 = DummyTopic("Topic2")
+        topic3 = DummyTopic("Topic3")
+        topic7 = DummyTopic("Topic7")
+
+        topic1.add_subscriber(topic2)
+        topic2.add_subscriber(topic3)
+        topic3.add_subscriber(topic7)
+        topic7.add_subscriber(topic1)
+
+
+        topics = [topic1,topic2,topic3,topic7]
+
+        is_cycle = is_cycle_present(topics)
+
+        assert is_cycle == True
+
+    def test_cylce_detection_one_vertex(self):
+        topic1 = DummyTopic("Topic1")
+
+        topics = [topic1]
+
+        is_cycle = is_cycle_present(topics)
+
+        assert is_cycle == False
+
+    def test_for_cycle_in_disconnected_graph_no_cycle(self):
+        topic1 = DummyTopic("Topic1")
+        topic2 = DummyTopic("Topic2")
+        topic3 = DummyTopic("Topic3")
+        topic4 = DummyTopic("Topic4")
+        topic5 = DummyTopic("Topic5")
+        topic6 = DummyTopic("Topic6")
+        topic7 = DummyTopic("Topic7")
+
+
+        # we have two connected subgraphs
+
+        topic1.add_subscriber(topic2)
+        topic1.add_subscriber(topic3)
+        topic1.add_subscriber(topic7)
+
+        topic4.add_subscriber(topic5)
+        topic4.add_subscriber(topic6)
+
+        topics = [topic1,topic2,topic3,topic4,topic5,topic6]
+
+        assert cycle_is_present_in_all(topics) == False
+
+    def test_for_cycle_in_disconnected_graph_with_cycle(self):
+        topic1 = DummyTopic("Topic1")
+        topic2 = DummyTopic("Topic2")
+        topic3 = DummyTopic("Topic3")
+        topic4 = DummyTopic("Topic4")
+        topic5 = DummyTopic("Topic5")
+        topic6 = DummyTopic("Topic6")
+        topic7 = DummyTopic("Topic7")
+
+
+        # we have two connected subgraphs
+
+        topic1.add_subscriber(topic2)
+        topic1.add_subscriber(topic3)
+        topic1.add_subscriber(topic7)
+
+        topic4.add_subscriber(topic5)
+        topic4.add_subscriber(topic6)
+        topic5.add_subscriber(topic4)
+
+        topics = [topic1,topic2,topic3,topic4,topic5,topic6]
+
+        assert cycle_is_present_in_all(topics) == True
 
 
 if __name__ == '__main__':

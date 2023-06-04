@@ -1,8 +1,10 @@
 
 from architecture.architecture_relationships import Command, Subscriber, Topic, Message
+from pyros_math.graph_theory import dependecy_sort
 import time
 import csv
 import json 
+
 
 class Scheduler:
     def __init__(self, log_file_to_read=None):
@@ -15,7 +17,7 @@ class Scheduler:
 
     def initialize(self):
 
-        self.topics = sort_topics_by_dependency(self.topics)
+        self.topics = dependecy_sort(self.topics)
 
         for topic in self.topics:
             print(f'Topic name: {topic.name}')
@@ -118,24 +120,4 @@ def is_topic_dependent_on_other_topic(topic: Topic, candidate_topic: Topic) -> b
     return topic in candidate_topic.subscribers
 
 
-def sort_topics_by_dependency(topics: list) -> list:
-    result = []
-    visited = set()
 
-    def dfs(topic):
-        if topic in visited:
-            return
-        visited.add(topic)
-        for subscriber in topic.subscribers:
-            if isinstance(subscriber,Topic):
-                print(f"{subscriber} is an instance of topic therefore will conduct dfs")
-                dfs(subscriber)
-            else:
-                print(f"{subscriber} is not an instance of topic therefore will not conduct dfs")
-        result.append(topic)
-
-    for topic in topics:
-        if topic not in visited:
-            dfs(topic)
-    
-    return result[::-1] # Reverse the list since we want topics with no dependencies first
