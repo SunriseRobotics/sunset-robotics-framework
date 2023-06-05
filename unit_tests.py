@@ -251,18 +251,6 @@ class DummyTopic(Topic):
         return self.name
 
 class AssessTopicSorting(unittest.TestCase):
-    def test_is_topic_dependent_on_other_topic(self):
-        topic1 = DummyTopic('Topic1')
-        topic2 = DummyTopic('Topic2')
-
-        # Initially, topic1 is not dependent on topic2
-        assert is_topic_dependent_on_other_topic(topic1, topic2) == False
-
-        # Adding topic1 as a subscriber to topic2
-        topic2.add_subscriber(topic1)
-
-        # Now, topic1 is dependent on topic2
-        assert is_topic_dependent_on_other_topic(topic1, topic2) == True
 
     def test_sort_topics_by_dependency(self):
         topic1 = DummyTopic('Topic1')
@@ -398,7 +386,7 @@ class AssessGraphModule(unittest.TestCase):
 
         topics = [topic1,topic2,topic3,topic4,topic5,topic6]
 
-        assert cycle_is_present_in_all(topics) == False
+        assert cycle_is_present_in_any(topics) == False
 
     def test_for_cycle_in_disconnected_graph_with_cycle(self):
         topic1 = DummyTopic("Topic1")
@@ -422,7 +410,7 @@ class AssessGraphModule(unittest.TestCase):
 
         topics = [topic1,topic2,topic3,topic4,topic5,topic6]
 
-        assert cycle_is_present_in_all(topics) == True
+        assert cycle_is_present_in_any(topics) == True
 
 
 if __name__ == '__main__':

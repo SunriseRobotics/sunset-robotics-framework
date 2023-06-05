@@ -75,6 +75,11 @@ def is_cycle_present(connected_topics: list) -> list:
         
         hare = hare.subscribers[0]
 
+        # if hare or tortise is not a subclass of Topic, then there is no cycle
+        if not isinstance(hare,Topic) or not isinstance(tortise,Topic):
+            return False
+
+
         if hare is None or len(hare.subscribers) == 0:
             # if there is no hare, or if the hare has gotten to the end with no remaining subscribers, then there is no cycle
             return False
@@ -83,7 +88,7 @@ def is_cycle_present(connected_topics: list) -> list:
             return True
 
 
-def cycle_is_present_in_all(all_topics: list) -> bool:
+def cycle_is_present_in_any(all_topics: list) -> bool:
     subgraphs = find_connected_subgraphs(all_topics)
     for subgraph in subgraphs:
         if is_cycle_present(subgraph):
