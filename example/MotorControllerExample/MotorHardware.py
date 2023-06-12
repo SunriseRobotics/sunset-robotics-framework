@@ -35,12 +35,13 @@ class VelocityPID(Topic):
 class MotorVelocity(Topic):
     def __init__(self,topic_name="MotorVelocity",is_sim=False):
         super().__init__(topic_name,is_sim)
+        self.replace_message_with_log = True
 
     def generate_messages_periodic(self):
-        return {"motor_velocity": 0}
+        return {"motor_velocity": 1}
 
     def __str__(self) -> str:
-        return f"MotorVelocity Topic(Velocity: 0)"
+        return f"MotorVelocity Topic(Velocity: 1)"
 
     def __repr__(self) -> str:
         return self.__str__()

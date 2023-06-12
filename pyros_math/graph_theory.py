@@ -13,10 +13,7 @@ def dependecy_sort(topics: list) -> list:
         visited.add(topic)
         for subscriber in topic.subscribers:
             if isinstance(subscriber,Topic):
-                print(f"{subscriber} is an instance of topic therefore will conduct dfs")
                 dfs(subscriber)
-            else:
-                print(f"{subscriber} is not an instance of topic therefore will not conduct dfs")
         result.append(topic)
 
     for topic in topics:

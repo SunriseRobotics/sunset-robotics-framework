@@ -2,7 +2,7 @@ from pyros_math.kinematics import *
 from pyros_math.geometry import *
 from pyros_math.TrapezoidProfile import *
 from pyros_math.graph_theory import *
-from architecture.scheduler import *
+from architecture.scheduler import Scheduler
 from architecture.architecture_relationships import *
 import unittest
 from unittest.mock import patch
@@ -266,8 +266,6 @@ class AssessTopicSorting(unittest.TestCase):
 
         sorted_topics = dependecy_sort(topics)
 
-        print("Sorted topics:", [topic.name for topic in sorted_topics])  # Debug print
-
         self.assertEqual(sorted_topics, [topic4, topic3, topic2, topic1])
 
 
@@ -416,3 +414,4 @@ class AssessGraphModule(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
+ 

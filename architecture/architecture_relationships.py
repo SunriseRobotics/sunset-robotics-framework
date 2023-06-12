@@ -63,6 +63,8 @@ class Message:
     '''
     def __init__(self, message: dict):
         self.message = message
+        if type(message) != dict:
+            raise TypeError(f"Message must be a dictionary instead of {type(message)}")
         self.time_stamp = time.time()
 
     def __str__(self) -> str:
@@ -181,6 +183,14 @@ class Topic(Subscriber):
         msg = Message(self.message_body)
         self.notify_subscribers(msg)
         return msg, self.__current_time, self.delta_time_seconds
+    
+    def publish_periodic_from_log(self, message_from_log: 'Message', current_time, delta_time_seconds) -> Message:
+        self.__current_time = current_time
+        self.delta_time_seconds = delta_time_seconds
+        self.__previous_time = self.__current_time
+        self.notify_subscribers(message_from_log)
+        return message_from_log, self.__current_time, self.delta_time_seconds
+    
 
     def notify_subscribers(self, msg: Message):
         for sub in self.subscribers:
