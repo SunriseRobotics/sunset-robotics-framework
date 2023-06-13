@@ -28,7 +28,7 @@ class Scheduler:
         if cycle_is_present_in_any(self.topics):
             raise TopicCircularDependency("There is a circular dependency in the topics, aborting init")
         for topic in self.topics:
-            print(f'Topic name: {topic.name}')
+            print("Topic name: {}".format(topic.name))
 
         self.begin_log()
         self.init_hardware()
