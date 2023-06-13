@@ -1,6 +1,7 @@
 from abc import ABC,abstractmethod
 import time
 import json
+# -*- coding: future_fstrings -*-
 
 
 class Subscriber(ABC):

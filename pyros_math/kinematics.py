@@ -1,5 +1,6 @@
 from abc import ABC,abstractmethod
 import numpy as np
+# -*- coding: future_fstrings -*-
 
 class state1D(ABC):
     def __init__(self) -> None:

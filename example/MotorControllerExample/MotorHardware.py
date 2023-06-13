@@ -1,5 +1,6 @@
 from architecture.architecture_relationships import *
 from architecture.scheduler import *
+# -*- coding: future_fstrings -*-
 
 class Motor(Subscriber):
     def __init__(self, subscriber_name="Motor",is_sim=False):
