@@ -7,10 +7,10 @@ class Motor(Subscriber):
         super().__init__(subscriber_name,is_sim)
         self.voltage_hardware = 0
     def subscriber_periodic(self):
-        print(f"messages {self.messages}")
+        print("messages {}".format(self.messages))
         self.voltage_hardware = self.messages["VelocityPID"].message["power"]
     def __str__(self) -> str:
-        return f"Motor Voltage Topic(Voltage: {self.voltage_hardware})"
+        return "Motor Voltage Topic(Voltage: {})".format(self.voltage_hardware)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -28,7 +28,7 @@ class VelocityPID(Topic):
         self.power_message = 0.1 * (self.reference_velocity - self.estimated_velocity)    
         return {"power": self.power_message}
     def __str__(self) -> str:
-        return f"VelocityPID Topic(Power: {self.power_message})"
+        return "VelocityPID Topic(Power: {})".format(self.power_message)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -42,7 +42,7 @@ class MotorVelocity(Topic):
         return {"motor_velocity": 1}
 
     def __str__(self) -> str:
-        return f"MotorVelocity Topic(Velocity: 1)"
+        return "MotorVelocity Topic(Velocity: 1)"
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -54,7 +54,7 @@ class ReferenceVelocity(Topic):
     def generate_messages_periodic(self):
         return {"reference_velocity": self.reference_velocity}
     def __str__(self) -> str:
-        return f"ReferenceVelocity Topic(Reference Velocity: {self.reference_velocity})"
+        return "ReferenceVelocity Topic(Reference Velocity: {})".format(self.reference_velocity)
 
     def __repr__(self) -> str:
         return self.__str__()    

@@ -1,7 +1,6 @@
 from abc import ABC,abstractmethod
 import time
 import json
-# -*- coding: future_fstrings -*-
 
 
 class Subscriber(ABC):
@@ -65,11 +64,11 @@ class Message:
     def __init__(self, message: dict):
         self.message = message
         if type(message) != dict:
-            raise TypeError(f"Message must be a dictionary instead of {type(message)}")
+            raise TypeError("Message must be a dictionary instead of {}".foramt(type(message)))
         self.time_stamp = time.time()
 
     def __str__(self) -> str:
-        return f"Message: {json.dumps(self.message)} at time {self.time_stamp}"
+        return "Message: {0} at time {1}".format(json.dumps(self.message), self.time_stamp)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -201,4 +200,4 @@ class Topic(Subscriber):
         self.subscribers.append(sub)
 
     def __str__(self) -> str:
-        return f"Topic: {self.name} with message {self.message_body}"
+        return "Topic: {0} with message {1}".format(self.name, self.message_body)

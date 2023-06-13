@@ -14,13 +14,13 @@ if __name__ == "__main__":
     # set commands
     command_velocity = CommandVelocity(reference_velocity, reference_velocity=1)
     # set scheduler
-    scheduler = Scheduler(False, "log_1686591959.csv")
+    scheduler = Scheduler(True, "log_1686678370.csv")
     
     scheduler.set_command_group(command_velocity)
     scheduler.add_subscribers(motor)
     scheduler.add_topics(reference_velocity, motor_velocity, velocity_pid)
     scheduler.initialize()
-    # run scheduler
+    # run schedule3r
     for i in range(1000):
         scheduler.periodic()
         print("Motor Voltage: {}".format(motor.voltage_hardware))

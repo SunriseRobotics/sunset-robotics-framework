@@ -1,0 +1,6 @@
+
+*.csv
+*.pyc
+*.pyc
+pyros_math/__pycache__/geometry.cpython-39.pyc
+pyros_math/__pycache__/kinematics.cpython-39.pyc

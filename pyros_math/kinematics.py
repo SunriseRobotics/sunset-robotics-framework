@@ -96,9 +96,9 @@ class vec2:
         self.x = x
         self.y = y
         if not issubclass(type(x), state1D) or not issubclass(type(y), state1D): 
-            raise TypeError(f"x (type: {type(x)}) and y (type: {type(y)}) must be subclasses of 'state' ") 
+            raise TypeError("x (type: {0}) and y (type: {1}) must be subclasses of 'state' ".format(type(x),type(y))) 
         if type(x) != type(y):
-            raise TypeError(f"the state type of x ({type(x)}) must match the state type of y ({type(y)})")
+            raise TypeError("the state type of x ({0}) must match the state type of y ({1})".format(type(x), type(y)))
         self.vec_np = np.array([x.get(),y.get()])
     def norm(self):
         return np.linalg.norm(self.vec_np)
@@ -144,9 +144,9 @@ class vec3:
         self.y = y 
         self.z = z
         if not issubclass(type(x), state1D) or not issubclass(type(y), state1D) or not issubclass(type(z), state1D):
-            raise TypeError(f"x (type: {type(x)}), y (type: {type(y)}), and z (type: {type(z)}) must be subclasses of 'state' ")
+            raise TypeError("x (type: {0}), y (type: {1}), and z (type: {2}) must be subclasses of 'state' ".format(type(x), type(y), type(z)))
         if type(x) != type(y) or type(x) != type(z):
-            raise TypeError(f"the state type of x ({type(x)}), y ({type(y)}), and z ({type(z)}) must match")
+            raise TypeError("the state type of x ({0}), y ({1}), and z ({2}) must match".format(type(x), type(y), type(z)))
         self.vec_np = np.array([x.get(),y.get(),z.get()])
 
     def norm(self):

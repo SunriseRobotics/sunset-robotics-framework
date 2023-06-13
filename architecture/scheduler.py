@@ -7,7 +7,6 @@ import csv
 import json
 
 import architecture.topicLogUtil as topicLogUtil
-# -*- coding: future_fstrings -*-
 
 class Scheduler:
     def __init__(self, is_sim = False, file_reading_name = None):
@@ -75,19 +74,19 @@ class Scheduler:
                 message = Message(message_dictionary)
                 message.time_stamp = current_time_seconds
                 topic.publish_periodic_from_log(message, current_time_seconds, delta_time_seconds)
-                stored_messages[topic.name] = f"{json.dumps(message.message)}, {current_time_seconds}, {delta_time_seconds}"    
+                stored_messages[topic.name] = "{0}, {1}, {2}".format(json.dumps(message.message), current_time_seconds, delta_time_seconds)
                 # if we are simulating, and we are replacing the message with a log, then we need to get the message from the log
             else:
                 # if not sim, or if we are not replacing the message with a log, then we need to publish the message since this implies it can be calculated with known inputs
                 message, current_time_seconds, delta_time_seconds = topic.publish_periodic()
-                stored_messages[topic.name] = f"{json.dumps(message.message)}, {current_time_seconds}, {delta_time_seconds}"
+                stored_messages[topic.name] = "{0}, {1}, {2}".format(json.dumps(message.message), current_time_seconds, delta_time_seconds)
         
 
 
         # write the messages to the log file
         if not self.is_sim and stored_messages:
             with open(self.writing_file_name, 'a+') as self.f:
-                self.f.write(f"{present_time}, {json.dumps(stored_messages)}\n")
+                self.f.write("{0}, {1}\n".format(present_time, json.dumps(stored_messages)))
 
         for sub in self.subscribers:
             sub.periodic()
@@ -121,17 +120,17 @@ class Scheduler:
             
             success = sub.initialize_hardware()
             if self.throw_exception_on_init_failure and not success:
-                raise RuntimeError(f"Hardware for Subscriber, '{sub.name}' failed to initialize, aborting init")
+                raise RuntimeError("Hardware for Subscriber, '{}' failed to initialize, aborting init".format(sub.name))
             sub.is_sim = self.is_sim
     def check_topic_name_collision(self):
         visited_topics = []
         for topic in self.topics:
             for topic_other in visited_topics:
                 if topic.name == topic_other.name:
-                    raise RuntimeError(f"Two or more Topics cannot have the same name: {topic.name}, Please Check your Configuration")
+                    raise RuntimeError("Two or more Topics cannot have the same name: {}, Please Check your Configuration".format(topic.name))
 
             visited_topics.append(topic)
 
             for sub in self.subscribers:
                 if topic.name == sub.name:
-                    raise RuntimeError(f"Topic and Subscriber cannot have the same name: {topic.name}")
+                    raise RuntimeError("Topic and Subscriber cannot have the same name: {}".format(topic.name))
