@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # set commands
     command_velocity = CommandVelocity(reference_velocity, reference_velocity=1)
     # set scheduler
-    scheduler = Scheduler(True, "log_1686591959.csv")
+    scheduler = Scheduler(False, "log_1686591959.csv")
     
     scheduler.set_command_group(command_velocity)
     scheduler.add_subscribers(motor)

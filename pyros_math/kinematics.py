@@ -63,7 +63,12 @@ class velocity(state1D):
         return self.v 
     def getAsPositionDelta(self, time: tSeconds) -> 'position':
         return position(self.v * time.seconds)
-    
+    def __eq__(self, __value: object) -> bool:
+        # check if the other object is a velocity
+        if not isinstance(__value, velocity):
+            return __value == self.v
+        else:
+            return __value.get() == self.v
 
 class position(state1D):
     def __init__(self, x) -> None:
@@ -131,6 +136,56 @@ class vec2:
     def __sub__(self, other: 'vec2'):
         return vec2(self.x - other.x, self.y - other.y) 
 
+
+class vec3:
+    def __init__(self, x: state1D, y: state1D, z: state1D):
+        self.x = x
+        self.y = y 
+        self.z = z
+        if not issubclass(type(x), state1D) or not issubclass(type(y), state1D) or not issubclass(type(z), state1D):
+            raise TypeError(f"x (type: {type(x)}), y (type: {type(y)}), and z (type: {type(z)}) must be subclasses of 'state' ")
+        if type(x) != type(y) or type(x) != type(z):
+            raise TypeError(f"the state type of x ({type(x)}), y ({type(y)}), and z ({type(z)}) must match")
+        self.vec_np = np.array([x.get(),y.get(),z.get()])
+
+    def norm(self):
+        return np.linalg.norm(self.vec_np)
+    
+    def unit(self):
+        return self.vec_np * (1/self.norm())
+    
+    def typeMatches(self, other: 'vec3'):
+        return type(self.x) == type(other.y) and type(self.x) == type(other.z)
+    
+    def __throw_if_mismatch__(self, other: 'vec3'):
+        if not self.typeMatches(other):
+            raise TypeError("Operation can not occur, likely due to missmatched time derivatives")
+        
+    def __reset_np_vec__(self):
+        self.vec_np[0] = self.x.get()
+        self.vec_np[1] = self.y.get()
+        self.vec_np[2] = self.z.get()
+
+    def add(self, other: 'vec3'):
+        self.__throw_if_mismatch__(other)
+        self.x.updateViaDelta(other.x)
+        self.y.updateViaDelta(other.y)
+        self.z.updateViaDelta(other.z)
+        self.__reset_np_vec__()
+
+    def sub(self,other: 'vec3'):
+        self.__throw_if_mismatch__(other)
+        self.x.updateViaDelta(other.x * -1)
+        self.y.updateViaDelta(other.y * -1)
+        self.z.updateViaDelta(other.z * -1)
+        self.__reset_np_vec__()
+
+    def __add__(self, other: 'vec3'):
+        return vec3(self.x + other.x, self.y + other.y, self.z + other.z)
+    
+    def __sub__(self, other: 'vec3'):
+        return vec3(self.x - other.x, self.y - other.y, self.z - other.z)
+    
 
 
 

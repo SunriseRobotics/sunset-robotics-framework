@@ -115,25 +115,25 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
 
 class TestTwist2DMethods(unittest.TestCase):
     def test_twist_to_transform_straight_line(self):
-        twist = twist2D(velocity(5), velocity(0), 0)
+        twist = Twist2D(velocity(5), velocity(0), 0)
         time = seconds(1)
-        transform = twist.twist_to_transform(time)
+        transform = twist.twist_to_pose(time)
         self.assertAlmostEqual(transform.x.get(), 5)
         self.assertAlmostEqual(transform.y.get(), 0)
         self.assertAlmostEqual(transform.theta, 0)
 
     def test_twist_to_transform_circular_path(self):
-        twist = twist2D(vx=velocity(0), vy=velocity(5), wz=math.pi/2)
-        transform = twist.twist_to_transform(seconds(1))
+        twist = Twist2D(vx=velocity(0), vy=velocity(5), wTheta=math.pi/2)
+        transform = twist.twist_to_pose(seconds(1))
 
         # The expected position would be (10/pi, 10/pi)
         self.assertAlmostEqual(transform.x.get(), 3.183098861837907)
         self.assertAlmostEqual(transform.y.get(), 3.183098861837907)
 
     def test_twist_to_transform_zero_time(self):
-        twist = twist2D(velocity(5), velocity(0), math.pi/2)
+        twist = Twist2D(velocity(5), velocity(0), math.pi/2)
         time = seconds(0)
-        transform = twist.twist_to_transform(time)
+        transform = twist.twist_to_pose(time)
         self.assertAlmostEqual(transform.x.get(), 0)
         self.assertAlmostEqual(transform.y.get(), 0)
         self.assertAlmostEqual(transform.theta, 0)
@@ -409,7 +409,58 @@ class AssessGraphModule(unittest.TestCase):
         topics = [topic1,topic2,topic3,topic4,topic5,topic6]
 
         assert cycle_is_present_in_any(topics) == True
+class TestQuaternion(unittest.TestCase):
+    def test_mul(self):
+        q1 = Quaternion(1, 0, 0, 0)  # Identity quaternion
+        q2 = Quaternion.from_angle_axis(np.pi, np.array([0, 0, 1]))  # 180 degree rotation about Z axis
+        q3 = q1 * q2
+        np.testing.assert_allclose([q3.w, q3.x, q3.y, q3.z], [0, 0, 0, 1], atol=1e-6)
+        
+    def test_to_rotation_matrix(self):
+        q = Quaternion.from_angle_axis(np.pi / 2, np.array([0, 0, 1]))  # 90 degree rotation about Z axis
+        R = q.to_rotation_matrix()
+        np.testing.assert_allclose(R, np.array([
+            [0, -1, 0],
+            [1, 0, 0],
+            [0, 0, 1]
+        ]), atol=1e-6)
 
+class TestRotation3D(unittest.TestCase):
+    def test_add(self):
+        r1 = Rotation3D(0, np.pi / 2, np.pi)
+        r2 = Rotation3D(np.pi / 2, np.pi, 0)
+        r3 = r1 + r2
+        self.assertEqual(r3.roll, np.pi / 2)
+        self.assertEqual(r3.pitch, np.pi * 1.5)
+        self.assertEqual(r3.yaw, np.pi)
+        
+    # Add more tests for other methods as needed...
+
+class TestPose3D(unittest.TestCase):
+    def test_add(self):
+        p1 = Pose3D(1, 2, 3, Rotation3D(0, 0, 0))
+        p2 = Pose3D(4, 5, 6, Rotation3D(np.pi / 2, np.pi / 2, np.pi / 2))
+        p3 = p1 + p2
+        self.assertEqual(p3.x, 5)
+        self.assertEqual(p3.y, 7)
+        self.assertEqual(p3.z, 9)
+        self.assertEqual(p3.rotation.roll, np.pi / 2)
+        self.assertEqual(p3.rotation.pitch, np.pi / 2)
+        self.assertEqual(p3.rotation.yaw, np.pi / 2)
+        
+    # Add more tests for other methods as needed...
+
+class TestTwist3D(unittest.TestCase):
+    def test_add(self):
+        t1 = Twist3D(velocity(1), velocity(2), velocity(3), velocity(4), velocity(5), velocity(6))
+        t2 = Twist3D(velocity(7), velocity(8), velocity(9), velocity(10), velocity(11), velocity(12))
+        t3 = t1 + t2
+        self.assertEqual(t3.vx, 8)
+        self.assertEqual(t3.vy, 10)
+        self.assertEqual(t3.vz, 12)
+        self.assertEqual(t3.wRoll, 14)
+        self.assertEqual(t3.wPitch, 16)
+        self.assertEqual(t3.wYaw, 18)
 
 if __name__ == '__main__':
     unittest.main()
