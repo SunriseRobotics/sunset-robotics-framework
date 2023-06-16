@@ -91,6 +91,11 @@ class Scheduler:
         for sub in self.subscribers:
             sub.periodic()
 
+        # often topcis are also subscribers.  All topics inherit from subscriber
+        for topic in self.topics:
+            topic.periodic()
+
+
     def set_command_group(self, head: Command):
         self.root_command = head
 
