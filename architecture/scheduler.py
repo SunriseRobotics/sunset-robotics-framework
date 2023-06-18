@@ -122,6 +122,14 @@ class Scheduler:
             if self.throw_exception_on_init_failure and not success:
                 raise RuntimeError("Hardware for Subscriber, '{}' failed to initialize, aborting init".format(sub.name))
             sub.is_sim = self.is_sim
+
+        for topic in self.topics:
+            success = topic.initialize_hardware()
+            if self.throw_exception_on_init_failure and not success:
+                raise RuntimeError("Hardware for Topic, '{}' failed to initialize, aborting init".format(topic.name))
+            topic.is_sim = self.is_sim
+            
+    
     def check_topic_name_collision(self):
         visited_topics = []
         for topic in self.topics:
