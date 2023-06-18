@@ -19,9 +19,12 @@ class Scheduler:
         self.file_reading_name = file_reading_name
         self.read_topics = None
         self.time_stamps = None
+        self.has_initialize_been_called = False
 
 
     def initialize(self):
+
+        self.has_initialize_been_called = True
 
         self.topics = dependecy_sort(self.topics)
 
@@ -30,9 +33,13 @@ class Scheduler:
         for topic in self.topics:
             print("Topic name: {}".format(topic.name))
 
+        print("Beginning log...")
         self.begin_log()
+        print("Initting hardware...")
         self.init_hardware()
+        print("finished initializing hardware...")
         self.check_topic_name_collision()
+        print("chec")
 
         if self.is_sim:
             if self.file_reading_name is None:
@@ -45,6 +52,10 @@ class Scheduler:
             self.root_command = self.root_command.next_command
 
     def periodic(self):
+
+        if not self.has_initialize_been_called:
+            raise Exception("Must call initialize before calling periodic otherwise hardware devices will not be connected...")
+        
 
         stored_messages = {}
         present_time = time.time()
@@ -128,7 +139,7 @@ class Scheduler:
             if self.throw_exception_on_init_failure and not success:
                 raise RuntimeError("Hardware for Topic, '{}' failed to initialize, aborting init".format(topic.name))
             topic.is_sim = self.is_sim
-            
+
     
     def check_topic_name_collision(self):
         visited_topics = []
