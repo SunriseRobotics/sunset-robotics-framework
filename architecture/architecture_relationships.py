@@ -100,7 +100,7 @@ class Command(ABC):
         """
         Set the next command to be executed once this command is complete.
         If this command already has a next command, append the new command to the end of the chain.
-        """
+        """ 
         if isinstance(next_command, Command):
             if self.next_command is None:
                 self.next_command = next_command
