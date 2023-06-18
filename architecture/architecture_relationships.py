@@ -139,6 +139,22 @@ class ParallelCommand(Command):
         return all(command.is_complete() for command in self.commands)
     
 
+class DelayCommand(Command):
+    def __init__(self, delay_time_s, name="Delay Command"):
+        self.delay_time = delay_time_s
+        self.name = name
+        self.first_run_occured = False
+
+    def first_run_behavior(self):
+        self.start_time = time.time()
+        self.first_run_occured = True
+
+    def periodic(self):
+        pass
+
+    def is_complete(self):
+        return time.time() - self.start_time >= self.delay_time
+
 class Topic(Subscriber):
     '''
     These could be various sensor readings or commands. 
