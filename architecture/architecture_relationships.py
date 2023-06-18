@@ -141,6 +141,7 @@ class ParallelCommand(Command):
 
 class DelayCommand(Command):
     def __init__(self, delay_time_s, name="Delay Command"):
+        super().__init__([])
         self.delay_time = delay_time_s
         self.name = name
         self.first_run_occured = False
