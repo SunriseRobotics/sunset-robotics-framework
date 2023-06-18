@@ -117,12 +117,7 @@ class Scheduler:
                 self.f.write("Time, TopicMessageDictionaries\n")
 
     def init_hardware(self):
-        visited_subs = []
-        for sub in self.subscribers:
-            for sub_other in visited_subs:
-                if sub.name == sub_other.name:
-                    sub.name = sub.name + "0"
-            
+        for sub in self.subscribers:            
             success = sub.initialize_hardware()
             if self.throw_exception_on_init_failure and not success:
                 raise RuntimeError("Hardware for Subscriber, '{}' failed to initialize, aborting init".format(sub.name))
