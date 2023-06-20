@@ -3,7 +3,9 @@ import json
 import re
 
 def split_outside_brackets(s, delimiter=','):
-    return re.split(r'{[^}]*}' + '|' + delimiter, s)
+    # This regex pattern will split the string correctly:
+    pattern = r',\s*(?![^{}]*})'
+    return re.split(pattern, s)
 
 def dump_file_contents(file_name: str):
     """
@@ -54,3 +56,8 @@ def get_message_at_time(time, dictionary_of_messages_vs_time):
 
 
 
+
+if __name__ == "__main__":
+    tricky_string = '{"imu_orientation_z_deg": 0, "encoder_2": 0, "encoder_1": 0, "imu_orientation_x_deg": 0, "imu_orientation_y_deg": 0}, 1687274057.6506414, 0.003597736358642578'
+    print(split_outside_brackets(tricky_string))
+    print(len(split_outside_brackets(tricky_string)))
