@@ -43,11 +43,7 @@ def get_message_at_time(time, dictionary_of_messages_vs_time):
     """
     message_as_dict = json.loads(dictionary_of_messages_vs_time[time])
     for key in message_as_dict:
-        print(message_as_dict[key])
-        # message_as_dict[key] = message_as_dict[key].split(',')
         message_as_dict[key] = split_outside_brackets(message_as_dict[key])
-        print(message_as_dict[key])
-        print(message_as_dict[key][0])
         message_as_dict[key][0] = json.loads(message_as_dict[key][0])
         message_as_dict[key][1] = float(message_as_dict[key][1])
         message_as_dict[key][2] = float(message_as_dict[key][2])
