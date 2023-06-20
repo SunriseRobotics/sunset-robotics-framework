@@ -35,7 +35,7 @@ class Scheduler:
 
         print("Beginning log...")
         self.begin_log()
-        print("Initting hardware...")
+        print("Initializing hardware...")
         self.init_hardware()
         print("finished initializing hardware...")
         self.check_topic_name_collision()
