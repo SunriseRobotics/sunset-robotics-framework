@@ -60,8 +60,11 @@ class Scheduler:
         stored_messages = {}
         present_time = time.time()
         if self.is_sim:
-            present_time = self.time_stamps.pop(0)
-
+            try:
+                present_time = self.time_stamps.pop(0)
+            except IndexError:
+                print("Simulation is over, no more messages to read")
+                return
         if not self.root_command is None and not self.root_command.first_run_occured:
             self.root_command.first_run()
         
