@@ -2,7 +2,7 @@
 from architecture.architecture_relationships import Command, Subscriber, Topic, Message
 from pyros_math.graph_theory import dependecy_sort, cycle_is_present_in_any
 from pyros_exceptions.pyros_exceptions import TopicCircularDependency, TopicNameCollision, SubscriberNameCollision
-from OnRobotUDP import start_client, send_data_to_server
+from architecture.OnRobotUDP import start_client, send_data_to_server
 import time
 import csv
 import json
@@ -121,8 +121,6 @@ class Scheduler:
         
         if self.enable_coms:
             self.send_data_to_server(self.client_socket, self.server_address, stored_messages)
-        
-
 
     def set_command_group(self, head: Command):
         self.root_command = head
