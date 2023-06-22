@@ -7,7 +7,9 @@ def start_client():
     server_address = ('192.168.1.120', 12345)  # Change to your needs
     return client_socket, server_address
 
-def send_data_to_server(client_socket, server_address, message):
+def send_data_to_server(client_socket, server_address, message: str):
+
+    message = message.encode()
 
     if message is None:
         return
@@ -24,4 +26,4 @@ def send_data_to_server(client_socket, server_address, message):
 
 if __name__ == "__main__":
     socket, address = start_client()
-    send_data_to_server(socket, address)
+    send_data_to_server(socket, address, "Hello World")
