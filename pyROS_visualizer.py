@@ -51,7 +51,6 @@ def update(_):
         artists = []
         for key, triad in triads.items():
             artists.extend(triad.get_artists())
-        sleep(0.1)
         return artists
 
 
@@ -87,6 +86,6 @@ if __name__ == "__main__":
     server_thread = threading.Thread(target=main)
     server_thread.start()
 
-    ani = FuncAnimation(fig, update, blit=False, interval=100, repeat=True, cache_frame_data=False)
+    ani = FuncAnimation(fig, update, blit=False, interval=10, repeat=False, cache_frame_data=False)
     plt.show()
     server_socket.close()
