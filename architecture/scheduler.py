@@ -21,7 +21,7 @@ class Scheduler:
         self.read_topics = None
         self.time_stamps = None
         self.has_initialize_been_called = False
-        self.enable_coms = False 
+        self.enable_coms = enable_coms 
         self.client_socket = None
         self.server_address = None
 
