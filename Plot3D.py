@@ -51,6 +51,7 @@ def update(_):
         artists = []
         for key, triad in triads.items():
             artists.extend(triad.get_artists())
+        sleep(0.1)
         return artists
 
 
@@ -58,22 +59,26 @@ def main():
     try:
         print("\nWaiting to receive message...")
         while True:
-            data, address = server_socket.recvfrom(4096)
-            print("fresh data recieved!")
+            # Continuously read from the socket until there's nothing left to read
+            while True:
+                try:
+                    # This will raise a socket.error exception if there's nothing to read
+                    data, address = server_socket.recvfrom(4096, socket.MSG_DONTWAIT)
 
-            # convert the data from a byte string to a string
-            data = data.decode()
+                    print("fresh data recieved!")
 
-            # convert the string to a json object
-            time, data = parse_line(data)
+                    # Convert the data from a byte string to a string
+                    data = data.decode()
 
-            data = json.loads(data)
-            update_triads(data)
+                    # Convert the string to a JSON object
+                    time, data = parse_line(data)
 
-            # delay for 0.1 seconds
-            sleep(0.1)
+                    data = json.loads(data)
+                    update_triads(data)
+                except socket.error:
+                    # Nothing left to read, break out of the inner loop
+                    break
 
-            
     except KeyboardInterrupt as e:
         print(e)
 
