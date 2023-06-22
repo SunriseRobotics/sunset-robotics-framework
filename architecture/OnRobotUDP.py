@@ -20,7 +20,7 @@ def send_data_to_server(client_socket, server_address, message: str):
 
     try:
         sent = client_socket.sendto(message, server_address)
-        data, server = client_socket.recvfrom(4096)
+        # data, server = client_socket.recvfrom(4096)
     except Exception as e:
         print(e)
 
