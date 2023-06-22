@@ -27,28 +27,31 @@ triads = {}
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
+triads_lock = threading.Lock()
 
 def update_triads(data):
-    for key in data.keys():
-        for type in TYPES_3D_PLOT.keys():
-            if type in key:
-                if key not in triads.keys():
-                    triads[key] = TriadVector(ax, origin=[0,0,0], length=1)  # I've set a fixed origin and length. Please adjust as per your needs.
-                split_data = split_outside_brackets(data[key])
-                print(split_data[0])
-                vector_data = json.loads(split_data[0])
+    with triads_lock:
+        for key in data.keys():
+            for type in TYPES_3D_PLOT.keys():
+                if type in key:
+                    if key not in triads.keys():
+                        triads[key] = TriadVector(ax, origin=[0,0,0], length=1)  # I've set a fixed origin and length. Please adjust as per your needs.
+                    split_data = split_outside_brackets(data[key])
+                    print(split_data[0])
+                    vector_data = json.loads(split_data[0])
 
-                if "POSE3D" in type:
-                    triads[key].set_position([vector_data["X"], vector_data["Y"], vector_data["Z"]])
-                elif "ANGLE_RAD" in type or "ORIENTATION_RAD" in type:
-                    triads[key].set_rotation([vector_data["X"], vector_data["Y"], vector_data["Z"]])
+                    if "POSE3D" in type:
+                        triads[key].set_position([vector_data["X"], vector_data["Y"], vector_data["Z"]])
+                    elif "ANGLE_RAD" in type or "ORIENTATION_RAD" in type:
+                        triads[key].set_rotation([vector_data["X"], vector_data["Y"], vector_data["Z"]])
 
 
 def update(_):
-    artists = []
-    for key, triad in triads.items():
-        artists.extend(triad.get_artists())
-    return artists
+    with triads_lock:
+        artists = []
+        for key, triad in triads.items():
+            artists.extend(triad.get_artists())
+        return artists
 
 
 def main():
@@ -66,7 +69,6 @@ def main():
             data = json.loads(data)
             update_triads(data)
 
-            print(data)
             # delay for 0.1 seconds
             sleep(0.1)
 
