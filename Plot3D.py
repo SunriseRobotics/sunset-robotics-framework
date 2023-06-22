@@ -35,7 +35,7 @@ def update_triads(data):
             for type in TYPES_3D_PLOT.keys():
                 if type in key:
                     if key not in triads.keys():
-                        triads[key] = TriadVector(ax, origin=[0,0,0], length=1)  # I've set a fixed origin and length. Please adjust as per your needs.
+                        triads[key] = TriadVector(ax, origin=[0,0,0], length=0.1)  # I've set a fixed origin and length. Please adjust as per your needs.
                     split_data = split_outside_brackets(data[key])
                     print(split_data[0])
                     vector_data = json.loads(split_data[0])
@@ -59,6 +59,7 @@ def main():
         print("\nWaiting to receive message...")
         while True:
             data, address = server_socket.recvfrom(4096)
+            print("fresh data recieved!")
 
             # convert the data from a byte string to a string
             data = data.decode()

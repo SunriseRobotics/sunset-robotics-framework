@@ -24,7 +24,7 @@ class Scheduler:
         self.enable_coms = enable_coms 
         self.client_socket = None
         self.server_address = None
-        self.num_runs_per_transmission = 20
+        self.num_runs_per_transmission = 100
         self.num_runs = 0 
 
 
@@ -129,7 +129,7 @@ class Scheduler:
         else:
             self.num_runs += 1
 
-            
+
     def set_command_group(self, head: Command):
         self.root_command = head
 
