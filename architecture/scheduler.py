@@ -52,7 +52,7 @@ class Scheduler:
             self.read_topics = topicLogUtil.construct_dictionary_of_messages_vs_time(self.time_stamps, messages_contents)
 
         if self.enable_coms:
-            self.client_socket, self.server_address = self.start_client()
+            self.client_socket, self.server_address = start_client()
             print("UDP started on client side: {} {}".format(self.client_socket, self.server_address)) 
 
 
@@ -121,7 +121,7 @@ class Scheduler:
 
         
         if self.enable_coms:
-            self.send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
+            send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
 
     def set_command_group(self, head: Command):
         self.root_command = head
