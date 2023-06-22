@@ -53,6 +53,7 @@ class Scheduler:
 
         if self.enable_coms:
             self.client_socket, self.server_address = self.start_client()
+            print("UDP started on client side: {} {}".format(self.client_socket, self.server_address)) 
 
 
     def advance_command(self):
@@ -104,12 +105,12 @@ class Scheduler:
                 stored_messages[topic.name] = "{0}, {1}, {2}".format(json.dumps(message.message), current_time_seconds, delta_time_seconds)
         
 
-        stored_messages = "{0}, {1}\n".format(present_time, json.dumps(stored_messages))
+        stored_messages_txt = "{0}, {1}\n".format(present_time, json.dumps(stored_messages))
 
         # write the messages to the log file
         if not self.is_sim and stored_messages:
             with open(self.writing_file_name, 'a+') as self.f:
-                self.f.write(stored_messages)
+                self.f.write(stored_messages_txt)
 
         for sub in self.subscribers:
             sub.periodic()
@@ -120,7 +121,7 @@ class Scheduler:
 
         
         if self.enable_coms:
-            self.send_data_to_server(self.client_socket, self.server_address, stored_messages)
+            self.send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
 
     def set_command_group(self, head: Command):
         self.root_command = head
