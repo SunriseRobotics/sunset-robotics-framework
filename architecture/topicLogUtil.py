@@ -26,6 +26,18 @@ def dump_file_contents(file_name: str):
     return times, messages
 
 
+def parse_line(line: str):
+    """
+    This function takes in a line in the format 'time,json' and returns a tuple containing the time as a float and the JSON data as a dictionary.
+    """
+    if line:
+        time, message = line.strip().split(',', 1)
+        time = float(time)
+        return time, message
+    else:
+        return None
+    
+
 
 def construct_dictionary_of_messages_vs_time(time_stamps, messages):
     """
