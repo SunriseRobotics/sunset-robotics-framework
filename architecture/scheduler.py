@@ -2,6 +2,7 @@
 from architecture.architecture_relationships import Command, Subscriber, Topic, Message
 from pyros_math.graph_theory import dependecy_sort, cycle_is_present_in_any
 from pyros_exceptions.pyros_exceptions import TopicCircularDependency, TopicNameCollision, SubscriberNameCollision
+from OnRobotUDP import start_client, send_data_to_server
 import time
 import csv
 import json
@@ -9,7 +10,7 @@ import json
 import architecture.topicLogUtil as topicLogUtil
 
 class Scheduler:
-    def __init__(self, is_sim = False, file_reading_name = None):
+    def __init__(self, is_sim = False, file_reading_name = None, enable_coms=False):
         self.topics = []
         self.subscribers = []
         self.is_sim = is_sim
@@ -20,6 +21,9 @@ class Scheduler:
         self.read_topics = None
         self.time_stamps = None
         self.has_initialize_been_called = False
+        self.enable_coms = False 
+        self.client_socket = None
+        self.server_address = None
 
 
     def initialize(self):
@@ -46,6 +50,10 @@ class Scheduler:
                 raise Exception("Must provide file name to read from in simulation mode.")
             self.time_stamps, messages_contents = topicLogUtil.dump_file_contents(self.file_reading_name)
             self.read_topics = topicLogUtil.construct_dictionary_of_messages_vs_time(self.time_stamps, messages_contents)
+
+        if self.enable_coms:
+            self.client_socket, self.server_address = self.start_client()
+
 
     def advance_command(self):
         if self.root_command and self.root_command.is_complete():
@@ -96,11 +104,12 @@ class Scheduler:
                 stored_messages[topic.name] = "{0}, {1}, {2}".format(json.dumps(message.message), current_time_seconds, delta_time_seconds)
         
 
+        stored_messages = "{0}, {1}\n".format(present_time, json.dumps(stored_messages))
 
         # write the messages to the log file
         if not self.is_sim and stored_messages:
             with open(self.writing_file_name, 'a+') as self.f:
-                self.f.write("{0}, {1}\n".format(present_time, json.dumps(stored_messages)))
+                self.f.write(stored_messages)
 
         for sub in self.subscribers:
             sub.periodic()
@@ -108,6 +117,11 @@ class Scheduler:
         # often topcis are also subscribers.  All topics inherit from subscriber
         for topic in self.topics:
             topic.periodic()
+
+        
+        if self.enable_coms:
+            self.send_data_to_server(self.client_socket, self.server_address, stored_messages)
+        
 
 
     def set_command_group(self, head: Command):
