@@ -1,14 +1,26 @@
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 import time
 import json
 
 
+def initialize_hardware() -> bool:
+    """
+    initialize hardware if applicable.
+
+    Returns True if all is well (no hardware is being checked or all hardware has successfully checked)
+    Returns False if there is any hardware failure.
+
+    """
+    return True
+
+
 class Subscriber(ABC):
-    '''
-    These could be different components or subsystems of your robot. 
-    For example, you might have a MotorController class that's responsible for driving the robot's motors. 
+    """
+    These could be different components or subsystems of your robot.
+    For example, you might have a MotorController class that's responsible for driving the robot's motors.
     This class could subscribe to topics that provide it with new motor commands.
-    '''
+    """
+
     def __init__(self, is_sim, subscriber_name="Abstract Subscriber"):
         super().__init__()
         # name of topic to message pair 
@@ -16,16 +28,6 @@ class Subscriber(ABC):
         self.is_sim = is_sim
         self.name = subscriber_name
 
-    def initialize_hardware(self) -> bool:
-        '''
-        initialize hardware if applicable.  
-
-        Returns True if all is well (no hardware is being checked or all hardware has successfully checked)
-        Returns False if there is any hardware failure.  
-
-        '''
-        return True
-    
     def periodic(self):
         '''
         Executes periodic tasks for the subscriber, using a different method for simulation mode
@@ -35,14 +37,13 @@ class Subscriber(ABC):
         else:
             self.subscriber_periodic()
 
-
     @abstractmethod
     def subscriber_periodic(self):
-        '''
+        """
         after we have stored all the messages from our topics, what do we want to do with this information
 
-        This is for you to implement  
-        '''
+        This is for you to implement
+        """
         pass
 
     def subscriber_periodic_sim(self):
@@ -56,15 +57,16 @@ class Subscriber(ABC):
 
 
 class Message:
-    '''
-    a message is simply a dictionary and a time stamp of when that dictionary was created. 
+    """
+    a message is simply a dictionary and a time stamp of when that dictionary was created.
 
-    Each Topic will know what dictionary elements need to be modified for each message. 
-    '''
+    Each Topic will know what dictionary elements need to be modified for each message.
+    """
+
     def __init__(self, message: dict):
         self.message = message
         if type(message) != dict:
-            raise TypeError("Message must be a dictionary instead of {}".foramt(type(message)))
+            raise TypeError("Message must be a dictionary instead of {}".format(type(message)))
         self.time_stamp = time.time()
 
     def __str__(self) -> str:
@@ -73,16 +75,17 @@ class Message:
     def __repr__(self) -> str:
         return self.__str__()
 
+
 class Command(ABC):
     def __init__(self, subscribers: list):
         self.dependent_subscribers = subscribers
         self.next_command = None
-        self.first_run_occured = False
+        self.first_run_occurred = False
 
     def first_run(self):
-        if not self.first_run_occured:
+        if not self.first_run_occurred:
             self.first_run_behavior()
-            self.first_run_occured = True
+            self.first_run_occurred = True
 
     @abstractmethod
     def first_run_behavior(self):
@@ -100,7 +103,7 @@ class Command(ABC):
         """
         Set the next command to be executed once this command is complete.
         If this command already has a next command, append the new command to the end of the chain.
-        """ 
+        """
         if isinstance(next_command, Command):
             if self.next_command is None:
                 self.next_command = next_command
@@ -118,12 +121,12 @@ class ParallelCommand(Command):
         # The list of commands to run in parallel
         self.commands = commands
         self.name = name
-        self.first_run_occured = False
+        self.first_run_occurred = False
 
     def first_run_behavior(self):
         for command in self.commands:
             command.first_run()
-        self.first_run_occured = True
+        self.first_run_occurred = True
 
     def periodic(self):
         for i, command in enumerate(self.commands):
@@ -137,7 +140,7 @@ class ParallelCommand(Command):
     def is_complete(self):
         # Returns True only if all commands have completed
         return all(command.is_complete() for command in self.commands)
-    
+
 
 class DelayCommand(Command):
     def __init__(self, delay_time_s, name="Delay Command"):
@@ -156,6 +159,7 @@ class DelayCommand(Command):
     def is_complete(self):
         return time.time() - self.start_time >= self.delay_time
 
+
 class Topic(Subscriber):
     '''
     These could be various sensor readings or commands. 
@@ -165,7 +169,8 @@ class Topic(Subscriber):
     Similarly, sensor topics can publish data 
     such as images from a camera, distance from an ultrasonic sensor, etc.
     '''
-    def __init__(self, name= "Abstract Topic", is_sim=False):
+
+    def __init__(self, name="Abstract Topic", is_sim=False):
         super().__init__(is_sim, name)
         self.subscribers = []
         self.message_body = {}
@@ -176,7 +181,6 @@ class Topic(Subscriber):
         # important if this topic is just used for reading data from a physical sensor that the simulation does not have access to read.  
         # should be kept false if the topic can be simulated or is calculated based on data from other topics.  Odometry and PID for example SHOULD be simulated
         self.replace_message_with_log = False
-
 
     def subscriber_periodic(self):
         pass
@@ -196,18 +200,17 @@ class Topic(Subscriber):
         self.__current_time = time.time()
         self.delta_time_seconds = self.__current_time - self.__previous_time
         self.message_body = self.generate_messages_periodic()
-        self.__previous_time = self.__current_time 
+        self.__previous_time = self.__current_time
         msg = Message(self.message_body)
         self.notify_subscribers(msg)
         return msg, self.__current_time, self.delta_time_seconds
-    
+
     def publish_periodic_from_log(self, message_from_log: 'Message', current_time, delta_time_seconds) -> Message:
         self.__current_time = current_time
         self.delta_time_seconds = delta_time_seconds
         self.__previous_time = self.__current_time
         self.notify_subscribers(message_from_log)
         return message_from_log, self.__current_time, self.delta_time_seconds
-    
 
     def notify_subscribers(self, msg: Message):
         for sub in self.subscribers:

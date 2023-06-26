@@ -44,7 +44,7 @@ class Scheduler:
         self.init_hardware()
         print("finished initializing hardware...")
         self.check_topic_name_collision()
-        print("chec")
+        print("name check finished...")
 
         if self.is_sim:
             if self.file_reading_name is None:
@@ -75,7 +75,7 @@ class Scheduler:
             except IndexError:
                 print("Simulation is over, no more messages to read")
                 return
-        if not self.root_command is None and not self.root_command.first_run_occured:
+        if not self.root_command is None and not self.root_command.first_run_occurred:
             self.root_command.first_run()
 
         self.advance_command()

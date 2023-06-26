@@ -78,14 +78,14 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
     def test_command_first_run(self):
         command = TestCommand([])
         command.first_run()
-        self.assertTrue(command.first_run_occured)
+        self.assertTrue(command.first_run_occurred)
 
     def test_parallel_command(self):
         command1 = TestCommand([])
         command2 = TestCommand([])
         parallel_command = ParallelCommand([command1, command2])
         parallel_command.first_run()
-        self.assertTrue(parallel_command.first_run_occured)
+        self.assertTrue(parallel_command.first_run_occurred)
 
     def test_parallel_command_with_next_in(self):
         command1 = TestCommand([])
@@ -97,7 +97,7 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
         parallel_command.periodic()
         parallel_command.periodic()
         # assert that command3 was run
-        self.assertTrue(command3.first_run_occured)
+        self.assertTrue(command3.first_run_occurred)
         
     def test_topic_add_subscriber(self):
         topic = TestTopic()
