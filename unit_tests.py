@@ -1,4 +1,4 @@
-from pyros_math.kinematics import * 
+from pyros_math.kinematics import *
 from pyros_math.geometry import *
 from pyros_math.TrapezoidProfile import *
 from pyros_math.graph_theory import *
@@ -6,6 +6,7 @@ from architecture.scheduler import Scheduler
 from architecture.architecture_relationships import *
 import unittest
 from unittest.mock import patch
+
 
 class TestCommand(Command):
     def first_run_behavior(self):
@@ -17,18 +18,22 @@ class TestCommand(Command):
     def is_complete(self):
         return True
 
+
 class TestSubscriber(Subscriber):
     def subscriber_periodic(self):
         pass
 
+
 class TestTopic(Topic):
     def generate_messages_periodic(self):
         return {}
+
     def subscriber_periodic(self):
-        return super().subscriber_periodic() 
+        return super().subscriber_periodic()
+
 
 class ArchitectureRelationshipsTest(unittest.TestCase):
-    
+
     def setUp(self):
         self.scheduler = Scheduler()
 
@@ -54,7 +59,7 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
     def test_subscriber_store_messages(self):
         subscriber = TestSubscriber(False)
         message = Message({"test": "test"})
-        subscriber.store_messages("test_topic",message)
+        subscriber.store_messages("test_topic", message)
         self.assertIn("test_topic", subscriber.messages)
 
     def test_subscriber_periodic(self):
@@ -65,7 +70,8 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
 
     def test_subscriber_periodic_sim(self):
         subscriber = TestSubscriber(True)
-        with patch.object(subscriber, 'subscriber_periodic_sim', wraps=subscriber.subscriber_periodic_sim) as mocked_method:
+        with patch.object(subscriber, 'subscriber_periodic_sim',
+                          wraps=subscriber.subscriber_periodic_sim) as mocked_method:
             subscriber.periodic()
             mocked_method.assert_called_once()
 
@@ -98,7 +104,7 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
         parallel_command.periodic()
         # assert that command3 was run
         self.assertTrue(command3.first_run_occurred)
-        
+
     def test_topic_add_subscriber(self):
         topic = TestTopic()
         subscriber = TestSubscriber(False)
@@ -113,6 +119,7 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
             topic.publish_periodic()
             mocked_method.assert_called_once()
 
+
 class TestTwist2DMethods(unittest.TestCase):
     def test_twist_to_transform_straight_line(self):
         twist = Twist2D(velocity(5), velocity(0), 0)
@@ -123,7 +130,7 @@ class TestTwist2DMethods(unittest.TestCase):
         self.assertAlmostEqual(transform.theta, 0)
 
     def test_twist_to_transform_circular_path(self):
-        twist = Twist2D(vx=velocity(0), vy=velocity(5), wTheta=math.pi/2)
+        twist = Twist2D(vx=velocity(0), vy=velocity(5), wTheta=math.pi / 2)
         transform = twist.twist_to_pose(seconds(1))
 
         # The expected position would be (10/pi, 10/pi)
@@ -131,7 +138,7 @@ class TestTwist2DMethods(unittest.TestCase):
         self.assertAlmostEqual(transform.y.get(), 3.183098861837907)
 
     def test_twist_to_transform_zero_time(self):
-        twist = Twist2D(velocity(5), velocity(0), math.pi/2)
+        twist = Twist2D(velocity(5), velocity(0), math.pi / 2)
         time = seconds(0)
         transform = twist.twist_to_pose(time)
         self.assertAlmostEqual(transform.x.get(), 0)
@@ -194,14 +201,14 @@ class TestStateMethods(unittest.TestCase):
         v1.add(v2)
         self.assertEqual(v1.x.get(), 3)
         self.assertEqual(v1.y.get(), 5)
-    
+
     def test_vec2_sub(self):
         v1 = vec2(position(1), position(2))
         v2 = vec2(position(2), position(3))
         v1.sub(v2)
         self.assertEqual(v1.x.get(), -1)
         self.assertEqual(v1.y.get(), -1)
-    
+
 
 class TestTrapezoidProfile(unittest.TestCase):
     def setUp(self):
@@ -210,8 +217,10 @@ class TestTrapezoidProfile(unittest.TestCase):
         self.max_vel = 50
         self.target_position_positive = 300
         self.target_position_negative = -300
-        self.profile_positive = TrapezoidProfile(self.max_accel, self.max_decel, self.max_vel, self.target_position_positive)
-        self.profile_negative = TrapezoidProfile(self.max_accel, self.max_decel, self.max_vel, self.target_position_negative)
+        self.profile_positive = TrapezoidProfile(self.max_accel, self.max_decel, self.max_vel,
+                                                 self.target_position_positive)
+        self.profile_negative = TrapezoidProfile(self.max_accel, self.max_decel, self.max_vel,
+                                                 self.target_position_negative)
 
     def test_positive_profile_duration(self):
         expected_profile_duration = self.profile_positive.dt1 + self.profile_positive.dt2 + self.profile_positive.dt3
@@ -223,32 +232,37 @@ class TestTrapezoidProfile(unittest.TestCase):
 
     def test_end_state_positive(self):
         final_state = self.profile_positive.getState(self.profile_positive.profileDuration)
-        self.assertAlmostEqual(final_state.x, self.target_position_positive,4)
+        self.assertAlmostEqual(final_state.x, self.target_position_positive, 4)
         self.assertAlmostEqual(final_state.v, 0, 4)
         self.assertAlmostEqual(final_state.a, 0, 4)
 
     def test_end_state_negative(self):
         final_state = self.profile_negative.getState(self.profile_negative.profileDuration)
-        self.assertAlmostEqual(final_state.x, self.target_position_negative,4)
-        self.assertAlmostEqual(final_state.v, 0 ,4)
+        self.assertAlmostEqual(final_state.x, self.target_position_negative, 4)
+        self.assertAlmostEqual(final_state.v, 0, 4)
         self.assertAlmostEqual(final_state.a, 0, 4)
 
     def test_mid_state_positive(self):
-        mid_state = self.profile_positive.getState(self.profile_positive.profileDuration/2)
+        mid_state = self.profile_positive.getState(self.profile_positive.profileDuration / 2)
         self.assertTrue(mid_state.v <= self.max_vel)
         self.assertTrue(math.fabs(mid_state.a) <= self.max_accel)
 
     def test_mid_state_negative(self):
-        mid_state = self.profile_negative.getState(self.profile_negative.profileDuration/2)
+        mid_state = self.profile_negative.getState(self.profile_negative.profileDuration / 2)
         self.assertTrue(mid_state.v <= -self.max_vel)
         self.assertTrue(math.fabs(mid_state.a) <= self.max_accel)
+
+
 class DummyTopic(Topic):
     def generate_messages_periodic(self):
         pass  # Add any implementation here if necessary
+
     def __str__(self) -> str:
         return self.name
+
     def __repr__(self) -> str:
         return self.name
+
 
 class AssessTopicSorting(unittest.TestCase):
 
@@ -279,7 +293,6 @@ class AssessGraphModule(unittest.TestCase):
         topic6 = DummyTopic("Topic6")
         topic7 = DummyTopic("Topic7")
 
-
         # we have two connected subgraphs
 
         topic1.add_subscriber(topic2)
@@ -292,8 +305,7 @@ class AssessGraphModule(unittest.TestCase):
         predicted_group_a = [topic1, topic2, topic3, topic7]
         predicted_group_b = [topic4, topic5, topic6]
 
-
-        topics = [topic1,topic2,topic3,topic4,topic5,topic6,topic7]
+        topics = [topic1, topic2, topic3, topic4, topic5, topic6, topic7]
 
         subgraphs = find_connected_subgraphs(topics)
 
@@ -313,7 +325,7 @@ class AssessGraphModule(unittest.TestCase):
         topic1.add_subscriber(topic3)
         topic1.add_subscriber(topic7)
 
-        topics = [topic1,topic2,topic3,topic7]
+        topics = [topic1, topic2, topic3, topic7]
 
         is_cycle = is_cycle_present(topics)
 
@@ -329,8 +341,7 @@ class AssessGraphModule(unittest.TestCase):
         topic2.add_subscriber(topic3)
         topic3.add_subscriber(topic7)
 
-
-        topics = [topic1,topic2,topic3,topic7]
+        topics = [topic1, topic2, topic3, topic7]
 
         is_cycle = is_cycle_present(topics)
 
@@ -347,8 +358,7 @@ class AssessGraphModule(unittest.TestCase):
         topic3.add_subscriber(topic7)
         topic7.add_subscriber(topic1)
 
-
-        topics = [topic1,topic2,topic3,topic7]
+        topics = [topic1, topic2, topic3, topic7]
 
         is_cycle = is_cycle_present(topics)
 
@@ -372,7 +382,6 @@ class AssessGraphModule(unittest.TestCase):
         topic6 = DummyTopic("Topic6")
         topic7 = DummyTopic("Topic7")
 
-
         # we have two connected subgraphs
 
         topic1.add_subscriber(topic2)
@@ -382,7 +391,7 @@ class AssessGraphModule(unittest.TestCase):
         topic4.add_subscriber(topic5)
         topic4.add_subscriber(topic6)
 
-        topics = [topic1,topic2,topic3,topic4,topic5,topic6]
+        topics = [topic1, topic2, topic3, topic4, topic5, topic6]
 
         assert cycle_is_present_in_any(topics) == False
 
@@ -395,7 +404,6 @@ class AssessGraphModule(unittest.TestCase):
         topic6 = DummyTopic("Topic6")
         topic7 = DummyTopic("Topic7")
 
-
         # we have two connected subgraphs
 
         topic1.add_subscriber(topic2)
@@ -406,24 +414,27 @@ class AssessGraphModule(unittest.TestCase):
         topic4.add_subscriber(topic6)
         topic5.add_subscriber(topic4)
 
-        topics = [topic1,topic2,topic3,topic4,topic5,topic6]
+        topics = [topic1, topic2, topic3, topic4, topic5, topic6]
 
         assert cycle_is_present_in_any(topics) == True
+
+
 class TestQuaternion(unittest.TestCase):
     def test_mul(self):
         q1 = Quaternion(1, 0, 0, 0)  # Identity quaternion
-        q2 = Quaternion.from_angle_axis(np.pi, np.array([0, 0, 1]))  # 180 degree rotation about Z axis
+        q2 = Quaternion.from_angle_axis(np.pi, np.array([0, 0, 1]))  # 180-degree rotation about Z axis
         q3 = q1 * q2
         np.testing.assert_allclose([q3.w, q3.x, q3.y, q3.z], [0, 0, 0, 1], atol=1e-6)
-        
+
     def test_to_rotation_matrix(self):
-        q = Quaternion.from_angle_axis(np.pi / 2, np.array([0, 0, 1]))  # 90 degree rotation about Z axis
+        q = Quaternion.from_angle_axis(np.pi / 2, np.array([0, 0, 1]))  # 90-degree rotation about Z axis
         R = q.to_rotation_matrix()
         np.testing.assert_allclose(R, np.array([
             [0, -1, 0],
             [1, 0, 0],
             [0, 0, 1]
         ]), atol=1e-6)
+
 
 class TestRotation3D(unittest.TestCase):
     def test_add(self):
@@ -433,8 +444,9 @@ class TestRotation3D(unittest.TestCase):
         self.assertEqual(r3.roll, np.pi / 2)
         self.assertEqual(r3.pitch, np.pi * 1.5)
         self.assertEqual(r3.yaw, np.pi)
-        
+
     # Add more tests for other methods as needed...
+
 
 class TestPose3D(unittest.TestCase):
     def test_add(self):
@@ -447,8 +459,9 @@ class TestPose3D(unittest.TestCase):
         self.assertEqual(p3.rotation.roll, np.pi / 2)
         self.assertEqual(p3.rotation.pitch, np.pi / 2)
         self.assertEqual(p3.rotation.yaw, np.pi / 2)
-        
+
     # Add more tests for other methods as needed...
+
 
 class TestTwist3D(unittest.TestCase):
     def test_add(self):
@@ -462,7 +475,6 @@ class TestTwist3D(unittest.TestCase):
         self.assertEqual(t3.wPitch, 16)
         self.assertEqual(t3.wYaw, 18)
 
+
 if __name__ == '__main__':
     unittest.main()
-
- 

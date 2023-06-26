@@ -3,15 +3,6 @@ import time
 import json
 
 
-def initialize_hardware() -> bool:
-    """
-    initialize hardware if applicable.
-
-    Returns True if all is well (no hardware is being checked or all hardware has successfully checked)
-    Returns False if there is any hardware failure.
-
-    """
-    return True
 
 
 class Subscriber(ABC):
@@ -54,6 +45,16 @@ class Subscriber(ABC):
 
     def store_messages(self, topic_name: str, message: 'Message'):
         self.messages[topic_name] = message
+
+    def initialize_hardware(self) -> bool:
+        """
+        initialize hardware if applicable.
+
+        Returns True if all is well (no hardware is being checked or all hardware has successfully checked)
+        Returns False if there is any hardware failure.
+
+        """
+        return True
 
 
 class Message:
