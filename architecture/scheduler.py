@@ -122,7 +122,7 @@ class Scheduler:
         for topic in self.topics:
             topic.periodic()
 
-        if self.num_runs >= self.num_runs_per_transmission:
+        if True:
             if self.enable_coms:
                 send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
             self.num_runs = 0

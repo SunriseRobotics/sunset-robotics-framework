@@ -3,6 +3,8 @@ import threading
 from architecture.topicLogUtil import *
 from visualization.triad import *
 import time
+import select
+import cProfile
 
 TYPES_3D_PLOT = {
     "POSE3D": ["X", "Y", "Z"],
@@ -11,7 +13,7 @@ TYPES_3D_PLOT = {
 }
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 4096 * 10)  # 10 times the previous buffer size
 
 # Bind the socket to a specific address and port
 server_address = ('192.168.1.120', 12345)  # Change to your needs
@@ -30,7 +32,7 @@ def update_triads(data):
             for type_ in TYPES_3D_PLOT.keys():
                 if type_ in key:
                     if key not in triads.keys():
-                        triads[key] = TriadVector(ax, origin=[0,0,0], length=0.1)
+                        triads[key] = TriadVector(ax, origin=[0, 0, 0], length=0.1)
                     split_data = split_outside_brackets(data[key])
                     vector_data = json.loads(split_data[0])
 
@@ -44,7 +46,10 @@ def update(_):
     with triads_lock:
         artists = []
         for key, triad in triads.items():
-            artists.extend(triad.get_artists())
+            if triad.rotation_data is not None:  # Only try to use rotation_data if it's not None
+                triad.set_rotation(triad.rotation_data)
+                artists.extend(triad.get_artists())
+        ax.figure.canvas.draw()
         return artists
 
 
@@ -52,34 +57,32 @@ def main():
     start = time.time()
     try:
         while True:
-            # Continuously read from the socket until there's nothing left to read
-            while True:
-                try:
-                    # This will raise a socket.error exception if there's nothing to read
-                    data, address = server_socket.recvfrom(4096, socket.MSG_DONTWAIT)
-                    # Convert the data from a byte string to a string
-                    data = data.decode()
+            try:
+                # This will raise a socket.error exception if there's nothing to read
+                data, address = server_socket.recvfrom(4096, socket.MSG_DONTWAIT)
+                # Convert the data from a byte string to a string
+                data = data.decode()
 
-                    # Convert the string to a JSON object
-                    _, data = parse_line(data)
+                # Convert the string to a JSON object
+                _, data = parse_line(data)
 
-                    data = json.loads(data)
-                    print(time.time() - start)
-                    start = time.time()
-                    print(data)
-                    update_triads(data)
-                except socket.error:
-                    # Nothing left to read, break out of the inner loop
-                    break
-
+                data = json.loads(data)
+                print(time.time() - start)
+                start = time.time()
+                print(data)
+                update_triads(data)
+            except socket.error:
+                pass
     except KeyboardInterrupt as e:
         print(e)
 
 
 if __name__ == "__main__":
-    server_thread = threading.Thread(target=main)
-    server_thread.start()
+    main()
 
-    ani = FuncAnimation(fig, update, blit=True, interval=10, repeat=False, cache_frame_data=False)
-    plt.show()
-    server_socket.close()
+    # server_thread = threading.Thread(target=main)
+    # server_thread.start()
+    #
+    # ani = FuncAnimation(fig, update, blit=False, interval=50, repeat=False, cache_frame_data=True)
+    # plt.show()
+    # server_socket.close()

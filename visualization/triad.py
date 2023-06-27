@@ -1,7 +1,8 @@
+from matplotlib.animation import FuncAnimation
+
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from mpl_toolkits.mplot3d import Axes3D
+
 
 class TriadVector:
     def __init__(self, ax, origin, length=1.0):
@@ -10,40 +11,25 @@ class TriadVector:
         self.length = length
         self.unit_vectors = {'x': np.array([1, 0, 0]), 'y': np.array([0, 1, 0]), 'z': np.array([0, 0, 1])}
         self.colors = {'x': 'r', 'y': 'g', 'z': 'b'}
+        self.rotation_data = None
+        # Create a dictionary of lines
+        self.lines = {hat: self.ax.plot3D(*zip(self.origin, self.origin + self.length * uv), color=color)[0] for
+                      hat, uv, color in zip(self.unit_vectors.keys(), self.unit_vectors.values(), self.colors.values())}
 
-        # Create a dictionary of arrows
-        self.arrows = {hat: self.ax.quiver(*self.origin, *self.length * uv, color=color) for hat, uv, color in zip(self.unit_vectors.keys(), self.unit_vectors.values(), self.colors.values())}
-
-    def rotate(self, angles):
-        # Generate rotation matrix from Euler angles
-        rotation_matrix = self.rotation_matrix(*angles)
-
-        # Rotate unit vectors
-        self.unit_vectors = {hat: rotation_matrix @ uv for hat, uv in self.unit_vectors.items()}
-
-        # Update arrows
-        for hat, uv in self.unit_vectors.items():
-            self.arrows[hat].remove()
-            self.arrows[hat] = self.ax.quiver(*self.origin, *self.length * uv, color=self.colors[hat])
-    
     def set_rotation(self, angles):
         # Generate rotation matrix from Euler angles
         rotation_matrix = self.rotation_matrix(*angles)
-
-        # Initialize unit vectors
-        initial_unit_vectors = {'x': np.array([1, 0, 0]), 'y': np.array([0, 1, 0]), 'z': np.array([0, 0, 1])}
-
-        # Rotate initial unit vectors
-        self.unit_vectors = {hat: rotation_matrix @ uv for hat, uv in initial_unit_vectors.items()}
-
-        # Update arrows
+        # Rotate unit vectors
         for hat, uv in self.unit_vectors.items():
-            self.arrows[hat].remove()
-            self.arrows[hat] = self.ax.quiver(*self.origin, *self.length * uv, color=self.colors[hat])
+            rotated_uv = rotation_matrix @ uv
+            # Update lines
+            self.lines[hat].set_xdata(np.array([self.origin[0], self.origin[0] + self.length * rotated_uv[0]]))
+            self.lines[hat].set_ydata(np.array([self.origin[1], self.origin[1] + self.length * rotated_uv[1]]))
+            self.lines[hat].set_3d_properties(np.array([self.origin[2], self.origin[2] + self.length * rotated_uv[2]]))
 
-    
     def get_artists(self):
-        return list(self.arrows.values())
+        return list(self.lines.values())
+
     @staticmethod
     def rotation_matrix(x, y, z):
         cos_x = np.cos(x)
@@ -69,13 +55,15 @@ if __name__ == "__main__":
     ax = fig.add_subplot(111, projection='3d')
 
     # Create triad vectors
-    triads = [TriadVector(ax, origin=[i-1, i-1, i-1]) for i in range(3)]
+    triads = [TriadVector(ax, origin=[i - 1, i - 1, i - 1]) for i in range(3)]
+
 
     def update(frame):
         for i, triad in enumerate(triads):
             # Give each vector a slightly different rotation speed
-            triad.rotate([(i+1)*frame/50, (i+1)*frame/100, (i+1)*frame/150])
+            triad.set_rotation([(i + 1) * frame / 50, (i + 1) * frame / 100, (i + 1) * frame / 150])
         ax.autoscale()
 
-    ani = FuncAnimation(fig, update, frames=np.linspace(0, 2*np.pi, 200), blit=False, interval=100, repeat=True)
+
+    ani = FuncAnimation(fig, update, frames=np.linspace(0, 2 * np.pi, 200), blit=False, interval=100, repeat=True)
     plt.show()
