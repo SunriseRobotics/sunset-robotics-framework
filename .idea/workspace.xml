@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0bda284-baa0-4355-8f5c-4ef2507f07ba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/networkx_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/architecture/architecture_relationships.py" beforeDir="false" afterPath="$PROJECT_DIR$/architecture/architecture_relationships.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/architecture/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/architecture/scheduler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/MotorControllerExample/MotorHardware.py" beforeDir="false" afterPath="$PROJECT_DIR$/example/MotorControllerExample/MotorHardware.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/networkx_test.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pyROS_visualizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyROS_visualizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyros_math/graph_theory.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyros_math/graph_theory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_motor.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_motor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unit_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/unit_tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,8 +131,8 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/pyros$pyROS_visualizer.coverage" NAME="pyROS_visualizer Coverage Results" MODIFIED="1687806608860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pyros$.coverage" NAME=" Coverage Results" MODIFIED="1687877638723" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pyros$test_motor.coverage" NAME="test_motor Coverage Results" MODIFIED="1687878556641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$.coverage" NAME=" Coverage Results" MODIFIED="1687878712274" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$test_motor.coverage" NAME="test_motor Coverage Results" MODIFIED="1687878706046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyros$networkx_test.coverage" NAME="networkx_test Coverage Results" MODIFIED="1687877839444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
