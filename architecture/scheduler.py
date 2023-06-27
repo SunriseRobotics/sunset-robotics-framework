@@ -122,12 +122,9 @@ class Scheduler:
         for topic in self.topics:
             topic.periodic()
 
-        if True:
-            if self.enable_coms:
-                send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
-            self.num_runs = 0
-        else:
-            self.num_runs += 1
+        if self.enable_coms:
+            send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
+
 
     def set_command_group(self, head: Command):
         self.root_command = head

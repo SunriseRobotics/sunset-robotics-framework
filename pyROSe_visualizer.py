@@ -55,34 +55,29 @@ def update(_):
 
 def main():
     start = time.time()
-    try:
-        while True:
-            try:
-                # This will raise a socket.error exception if there's nothing to read
-                data, address = server_socket.recvfrom(4096, socket.MSG_DONTWAIT)
-                # Convert the data from a byte string to a string
-                data = data.decode()
+    while True:
+        try:
+            # This will raise a socket.error exception if there's nothing to read
+            data, address = server_socket.recvfrom(4096, socket.MSG_DONTWAIT)
+            # Convert the data from a byte string to a string
+            data = data.decode()
 
-                # Convert the string to a JSON object
-                _, data = parse_line(data)
+            # Convert the string to a JSON object
+            _, data = parse_line(data)
 
-                data = json.loads(data)
-                print(time.time() - start)
-                start = time.time()
-                print(data)
-                update_triads(data)
-            except socket.error:
-                pass
-    except KeyboardInterrupt as e:
-        print(e)
+            data = json.loads(data)
+            print(time.time() - start)
+            start = time.time()
+            print(data)
+            update_triads(data)
+        except socket.error:
+            pass
 
 
 if __name__ == "__main__":
-    main()
+    server_thread = threading.Thread(target=main)
+    server_thread.start()
 
-    # server_thread = threading.Thread(target=main)
-    # server_thread.start()
-    #
-    # ani = FuncAnimation(fig, update, blit=False, interval=50, repeat=False, cache_frame_data=True)
-    # plt.show()
-    # server_socket.close()
+    ani = FuncAnimation(fig, update, blit=True, interval=50, repeat=False, cache_frame_data=True)
+    plt.show()
+    server_socket.close()
