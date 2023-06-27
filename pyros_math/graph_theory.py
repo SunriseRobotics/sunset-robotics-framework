@@ -1,9 +1,10 @@
 from architecture.architecture_relationships import Topic, Subscriber
 
-def dependecy_sort(topics: list) -> list:
-    '''
+
+def dependency_sort(topics: list) -> list:
+    """
     When iterating through the topics to publish messages, we should publish messages without dependencies first, then publish messages with dependencies.
-    '''
+    """
     result = []
     visited = set()
 
@@ -12,15 +13,16 @@ def dependecy_sort(topics: list) -> list:
             return
         visited.add(topic)
         for subscriber in topic.subscribers:
-            if isinstance(subscriber,Topic):
+            if isinstance(subscriber, Topic):
                 dfs(subscriber)
         result.append(topic)
 
     for topic in topics:
         if topic not in visited:
             dfs(topic)
-    
+
     return result[::-1]
+
 
 def find_connected_subgraphs(topics: list) -> list:
     '''
@@ -35,7 +37,7 @@ def find_connected_subgraphs(topics: list) -> list:
         visited.add(topic)
         subgraph.append(topic)
         for subscriber in topic.subscribers:
-            if isinstance(subscriber,Topic):
+            if isinstance(subscriber, Topic):
                 dfs(subscriber)
 
     for topic in topics:
@@ -43,8 +45,9 @@ def find_connected_subgraphs(topics: list) -> list:
             subgraph = []
             dfs(topic)
             subgraphs.append(subgraph)
-    
+
     return subgraphs
+
 
 def is_cycle_present(connected_topics: list) -> list:
     '''
@@ -64,18 +67,17 @@ def is_cycle_present(connected_topics: list) -> list:
         if len(hare.subscribers) == 0:
             # if the hare has gotten to the end with no remaining subscribers, then there is no cycle
             return False
-        
+
         hare = hare.subscribers[0]
         if len(hare.subscribers) == 0:
             # if the hare has gotten to the end with no remaining subscribers, then there is no cycle
             return False
-        
+
         hare = hare.subscribers[0]
 
         # if hare or tortise is not a subclass of Topic, then there is no cycle
-        if not isinstance(hare,Topic) or not isinstance(tortise,Topic):
+        if not isinstance(hare, Topic) or not isinstance(tortise, Topic):
             return False
-
 
         if hare is None or len(hare.subscribers) == 0:
             # if there is no hare, or if the hare has gotten to the end with no remaining subscribers, then there is no cycle
@@ -91,4 +93,29 @@ def cycle_is_present_in_any(all_topics: list) -> bool:
         if is_cycle_present(subgraph):
             return True
     return False
-        
+
+
+def generate_network_graph(topics, subscribers):
+    import networkx as nx
+    import matplotlib.pyplot as plt
+    G = nx.DiGraph()
+
+    # Iterate through the list of topics
+    for topic in topics:
+        G.add_node(topic.name, color='blue')  # Topics are represented as blue nodes
+        # Add an edge from this topic to each of its subscribers
+        for subscriber in topic.subscribers:
+            G.add_edge(topic.name, subscriber.name)
+
+    # Iterate through the list of subscribers (which are not topics)
+    for subscriber in subscribers:
+        if subscriber not in topics:
+            G.add_node(subscriber.name, color='red')  # Subscribers are represented as red nodes
+
+    # Draw the graph
+    pos = nx.spring_layout(G)  # positions for all nodes
+    labels_pos = {node: (pos[node][0], pos[node][1] + 0.1) for node in G.nodes()}  # positions for all labels
+    colors = [node[1]['color'] for node in G.nodes(data=True)]
+    nx.draw(G, pos, node_color=colors, with_labels=False, arrows=True)
+    nx.draw_networkx_labels(G, labels_pos)
+    plt.show()

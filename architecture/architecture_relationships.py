@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 import time
 import json
-
-
+from typing import Tuple, Any
 
 
 class Subscriber(ABC):
@@ -38,9 +37,9 @@ class Subscriber(ABC):
         pass
 
     def subscriber_periodic_sim(self):
-        '''
-        optional simulation method that one can override if they want different logic than their noirmal periodic
-        '''
+        """
+        optional simulation method that one can override if they want different logic than their normal periodic
+        """
         self.subscriber_periodic()
 
     def store_messages(self, topic_name: str, message: 'Message'):
@@ -146,13 +145,14 @@ class ParallelCommand(Command):
 class DelayCommand(Command):
     def __init__(self, delay_time_s, name="Delay Command"):
         super().__init__([])
+        self.start_time = None
         self.delay_time = delay_time_s
         self.name = name
-        self.first_run_occured = False
+        self.first_run_occurred = False
 
     def first_run_behavior(self):
         self.start_time = time.time()
-        self.first_run_occured = True
+        self.first_run_occurred = True
 
     def periodic(self):
         pass
@@ -162,14 +162,14 @@ class DelayCommand(Command):
 
 
 class Topic(Subscriber):
-    '''
-    These could be various sensor readings or commands. 
-    For example, you might have a SpeedCommand topic that the MotorController subscribes to. 
-    Whenever a new message is published on this topic, 
-    the MotorController would update the robot's speed accordingly. 
-    Similarly, sensor topics can publish data 
+    """
+    These could be various sensor readings or commands.
+    For example, you might have a SpeedCommand topic that the MotorController subscribes to.
+    Whenever a new message is published on this topic,
+    the MotorController would update the robot's speed accordingly.
+    Similarly, sensor topics can publish data
     such as images from a camera, distance from an ultrasonic sensor, etc.
-    '''
+    """
 
     def __init__(self, name="Abstract Topic", is_sim=False):
         super().__init__(is_sim, name)
@@ -178,9 +178,10 @@ class Topic(Subscriber):
         self.__current_time = time.time()
         self.__previous_time = time.time()
         self.delta_time_seconds = self.__current_time - self.__previous_time
-        # when true, if we are simulating, we will publish the message that was in the log file instead of generating a new one
-        # important if this topic is just used for reading data from a physical sensor that the simulation does not have access to read.  
-        # should be kept false if the topic can be simulated or is calculated based on data from other topics.  Odometry and PID for example SHOULD be simulated
+        # when true, if we are simulating, we will publish the message that was in the log file instead of generating
+        # a new one important if this topic is just used for reading data from a physical sensor that the simulation
+        # does not have access to read. should be kept false if the topic can be simulated or is calculated based on
+        # data from other topics.  Odometry and PID for example SHOULD be simulated
         self.replace_message_with_log = False
 
     def subscriber_periodic(self):
@@ -197,7 +198,7 @@ class Topic(Subscriber):
         '''
         pass
 
-    def publish_periodic(self) -> Message:
+    def publish_periodic(self) -> Tuple[Message, float, float]:
         self.__current_time = time.time()
         self.delta_time_seconds = self.__current_time - self.__previous_time
         self.message_body = self.generate_messages_periodic()
@@ -206,7 +207,8 @@ class Topic(Subscriber):
         self.notify_subscribers(msg)
         return msg, self.__current_time, self.delta_time_seconds
 
-    def publish_periodic_from_log(self, message_from_log: 'Message', current_time, delta_time_seconds) -> Message:
+    def publish_periodic_from_log(self, message_from_log: 'Message', current_time, delta_time_seconds) -> \
+            Tuple[Message, Any, Any]:
         self.__current_time = current_time
         self.delta_time_seconds = delta_time_seconds
         self.__previous_time = self.__current_time

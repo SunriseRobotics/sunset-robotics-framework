@@ -81,6 +81,6 @@ if __name__ == "__main__":
     server_thread = threading.Thread(target=main)
     server_thread.start()
 
-    # ani = FuncAnimation(fig, update, blit=False, interval=10, repeat=False, cache_frame_data=False)
-    # plt.show()
-    # server_socket.close()
+    ani = FuncAnimation(fig, update, blit=True, interval=10, repeat=False, cache_frame_data=False)
+    plt.show()
+    server_socket.close()

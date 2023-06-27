@@ -278,7 +278,7 @@ class AssessTopicSorting(unittest.TestCase):
 
         topics = [topic1, topic2, topic3, topic4]
 
-        sorted_topics = dependecy_sort(topics)
+        sorted_topics = dependency_sort(topics)
 
         self.assertEqual(sorted_topics, [topic4, topic3, topic2, topic1])
 
@@ -478,3 +478,4 @@ class TestTwist3D(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

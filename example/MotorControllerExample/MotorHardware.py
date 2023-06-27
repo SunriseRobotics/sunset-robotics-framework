@@ -6,7 +6,7 @@ from architecture.scheduler import *
 
 class Motor(Subscriber):
     def __init__(self, subscriber_name="Motor", is_sim=False):
-        super().__init__(subscriber_name, is_sim)
+        super().__init__(is_sim, subscriber_name)
         self.voltage_hardware = 0
 
     def subscriber_periodic(self):

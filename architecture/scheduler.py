@@ -1,5 +1,5 @@
 from architecture.architecture_relationships import Command, Subscriber, Topic, Message
-from pyros_math.graph_theory import dependecy_sort, cycle_is_present_in_any
+from pyros_math.graph_theory import dependency_sort, cycle_is_present_in_any
 from pyros_exceptions.pyros_exceptions import TopicCircularDependency, TopicNameCollision, SubscriberNameCollision
 from architecture.OnRobotUDP import start_client, send_data_to_server
 import time
@@ -31,7 +31,7 @@ class Scheduler:
 
         self.has_initialize_been_called = True
 
-        self.topics = dependecy_sort(self.topics)
+        self.topics = dependency_sort(self.topics)
 
         if cycle_is_present_in_any(self.topics):
             raise TopicCircularDependency("There is a circular dependency in the topics, aborting init")
@@ -122,7 +122,7 @@ class Scheduler:
         for topic in self.topics:
             topic.periodic()
 
-        if True: # self.num_runs >= self.num_runs_per_transmission:
+        if self.num_runs >= self.num_runs_per_transmission:
             if self.enable_coms:
                 send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
             self.num_runs = 0
@@ -178,3 +178,5 @@ class Scheduler:
             for sub in self.subscribers:
                 if topic.name == sub.name:
                     raise RuntimeError("Topic and Subscriber cannot have the same name: {}".format(topic.name))
+
+
