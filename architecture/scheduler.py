@@ -75,7 +75,7 @@ class Scheduler:
             except IndexError:
                 print("Simulation is over, no more messages to read")
                 return
-        if not self.root_command is None and not self.root_command.first_run_occurred:
+        if not (self.root_command is None) and not self.root_command.first_run_occurred:
             self.root_command.first_run()
 
         self.advance_command()
@@ -178,5 +178,3 @@ class Scheduler:
             for sub in self.subscribers:
                 if topic.name == sub.name:
                     raise RuntimeError("Topic and Subscriber cannot have the same name: {}".format(topic.name))
-
-

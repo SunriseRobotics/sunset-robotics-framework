@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0bda284-baa0-4355-8f5c-4ef2507f07ba" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/networkx_test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyROS_visualizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyROS_visualizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/architecture/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/architecture/scheduler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
