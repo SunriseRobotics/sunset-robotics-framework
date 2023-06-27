@@ -7,6 +7,7 @@ Inspired by the flexibility of the [Robot Operating System](https://www.ros.org/
 <p>Our goal is to bring intelligent robot control to everyone.</p>
 
 <h3>Features:</h3>
+
 * Topic / Subscriber Paradigm
   * Structure your code in a way that forces ease of logging 
   * Circular Dependency Detection using tortoise and hare algorithm 
