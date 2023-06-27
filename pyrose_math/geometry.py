@@ -1,7 +1,7 @@
 import numpy as np
 import math 
 
-from pyros_math.kinematics import *
+from pyrose_math.kinematics import *
 
 
 class Quaternion:

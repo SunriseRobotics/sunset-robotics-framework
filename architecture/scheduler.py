@@ -1,6 +1,6 @@
 from architecture.architecture_relationships import Command, Subscriber, Topic, Message
-from pyros_math.graph_theory import dependency_sort, cycle_is_present_in_any
-from pyros_exceptions.pyros_exceptions import TopicCircularDependency, TopicNameCollision, SubscriberNameCollision
+from pyrose_math.graph_theory import dependency_sort, cycle_is_present_in_any
+from pyrose_exceptions.pyros_exceptions import TopicCircularDependency, TopicNameCollision, SubscriberNameCollision
 from architecture.OnRobotUDP import start_client, send_data_to_server
 import time
 import csv

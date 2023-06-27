@@ -1,7 +1,7 @@
-from pyros_math.kinematics import *
-from pyros_math.geometry import *
-from pyros_math.TrapezoidProfile import *
-from pyros_math.graph_theory import *
+from pyrose_math.kinematics import *
+from pyrose_math.geometry import *
+from pyrose_math.TrapezoidProfile import *
+from pyrose_math.graph_theory import *
 from architecture.scheduler import Scheduler
 from architecture.architecture_relationships import *
 import unittest
