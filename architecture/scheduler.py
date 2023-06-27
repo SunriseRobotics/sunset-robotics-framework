@@ -26,6 +26,7 @@ class Scheduler:
         self.server_address = None
         self.num_runs_per_transmission = 100
         self.num_runs = 0
+        self.debug = False
 
     def initialize(self):
 
@@ -73,8 +74,8 @@ class Scheduler:
             try:
                 present_time = self.time_stamps.pop(0)
             except IndexError:
-                print("Simulation is over, no more messages to read")
-                return
+                if self.debug:
+                    print("Simulation is over, no more messages to read")
         if not (self.root_command is None) and not self.root_command.first_run_occurred:
             self.root_command.first_run()
 
@@ -84,7 +85,7 @@ class Scheduler:
         if self.root_command is not None:
             self.root_command.periodic()
         else:
-            print("No further command to execute")
+            pass
 
         all_logged_messages = None
 
@@ -124,7 +125,6 @@ class Scheduler:
 
         if self.enable_coms:
             send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
-
 
     def set_command_group(self, head: Command):
         self.root_command = head

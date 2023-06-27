@@ -22,7 +22,9 @@ triads = {}
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-
+ax.set_xlim(0.3, 0.7)
+ax.set_ylim(0.3, 0.7)
+ax.set_zlim(0.3, 0.7)
 triads_lock = threading.Lock()
 
 
@@ -32,7 +34,7 @@ def update_triads(data):
             for type_ in TYPES_3D_PLOT.keys():
                 if type_ in key:
                     if key not in triads.keys():
-                        triads[key] = TriadVector(ax, origin=[0, 0, 0], length=0.1)
+                        triads[key] = TriadVector(ax, origin=[0.5, 0.5, 0.5], length=0.1)
                     split_data = split_outside_brackets(data[key])
                     vector_data = json.loads(split_data[0])
 
@@ -49,7 +51,9 @@ def update(_):
             if triad.rotation_data is not None:  # Only try to use rotation_data if it's not None
                 triad.set_rotation(triad.rotation_data)
                 artists.extend(triad.get_artists())
+
         ax.figure.canvas.draw()
+        ax.figure.canvas.flush_events()
         return artists
 
 
