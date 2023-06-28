@@ -33,15 +33,18 @@ def update_triads(data):
         for key in data.keys():
             for type_ in TYPES_3D_PLOT.keys():
                 if type_ in key:
-                    if key not in triads.keys():
-                        triads[key] = TriadVector(ax, origin=[0.5, 0.5, 0.5], length=0.1)
+                    # remove the end from the string
+                    triad_key = key.replace("_" + type_, "")
+                    if triad_key not in triads.keys():
+                        triads[triad_key] = TriadVector(ax, origin=[0.5, 0.5, 0.5], length=0.1)
                     split_data = split_outside_brackets(data[key])
                     vector_data = json.loads(split_data[0])
+                    print(triads)
 
                     if "POSE3D" in type_:
-                        triads[key].set_position([vector_data["X"], vector_data["Y"], vector_data["Z"]])
+                        triads[triad_key].set_position([vector_data["X"], vector_data["Y"], vector_data["Z"]])
                     elif "ANGLE_RAD" in type_ or "ORIENTATION_RAD" in type_:
-                        triads[key].set_rotation([vector_data["X"], vector_data["Y"], vector_data["Z"]])
+                        triads[triad_key].set_rotation([vector_data["X"], vector_data["Y"], vector_data["Z"]])
 
 
 def update(_):

@@ -16,6 +16,21 @@ class TriadVector:
         self.lines = {hat: self.ax.plot3D(*zip(self.origin, self.origin + self.length * uv), color=color)[0] for
                       hat, uv, color in zip(self.unit_vectors.keys(), self.unit_vectors.values(), self.colors.values())}
 
+    def set_position(self, position):
+        self.origin = np.array(position)
+        # Update lines' positions
+        for hat, uv in self.unit_vectors.items():
+            # Use current rotation_data to calculate the orientation
+            if self.rotation_data is not None:
+                rotation_matrix = self.rotation_matrix(*self.rotation_data)
+                rotated_uv = rotation_matrix @ uv
+            else:
+                rotated_uv = uv
+            # Update lines
+            self.update_lines(hat, rotated_uv)
+
+        # implement
+
     def set_rotation(self, angles):
         # Generate rotation matrix from Euler angles
         rotation_matrix = self.rotation_matrix(*angles)
@@ -23,9 +38,12 @@ class TriadVector:
         for hat, uv in self.unit_vectors.items():
             rotated_uv = rotation_matrix @ uv
             # Update lines
-            self.lines[hat].set_xdata(np.array([self.origin[0], self.origin[0] + self.length * rotated_uv[0]]))
-            self.lines[hat].set_ydata(np.array([self.origin[1], self.origin[1] + self.length * rotated_uv[1]]))
-            self.lines[hat].set_3d_properties(np.array([self.origin[2], self.origin[2] + self.length * rotated_uv[2]]))
+            self.update_lines(hat, rotated_uv)
+
+    def update_lines(self, hat, rotated_uv):
+        self.lines[hat].set_xdata(np.array([self.origin[0], self.origin[0] + self.length * rotated_uv[0]]))
+        self.lines[hat].set_ydata(np.array([self.origin[1], self.origin[1] + self.length * rotated_uv[1]]))
+        self.lines[hat].set_3d_properties(np.array([self.origin[2], self.origin[2] + self.length * rotated_uv[2]]))
 
     def get_artists(self):
         return list(self.lines.values())
