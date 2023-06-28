@@ -247,6 +247,7 @@ class SystemTimeTopic(Topic):
         self.message["Unix"] = current_time
         self.message["DeltaTimeSeconds"] = current_time - self.previous_time
         self.previous_time = current_time
+        return self.message
 
 
 
