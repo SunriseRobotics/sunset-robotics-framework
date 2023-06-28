@@ -224,3 +224,30 @@ class Topic(Subscriber):
 
     def __str__(self) -> str:
         return "Topic: {0} with message {1}".format(self.name, self.message_body)
+
+
+class SystemTimeTopic(Topic):
+    """
+    Lots of calculations rely on accurate timing information, many of which can be the source of issues that need to
+    be debugged. Instead of using the python time module directly, pyROSe users are expected to utilize this topic.
+    This enables accurate timing information to be recorded and then replayed in the pyROSe simulation mode.
+    """
+    def __init__(self, topic_name="SystemTime", is_sim=False):
+        super().__init__(topic_name, is_sim)
+        self.replace_message_with_log = True
+        self.message = {"Unix": time.time(), "DeltaTimeSeconds": 0.0}
+        self.previous_time = time.time()
+        self.has_periodic_call_occurred = False
+
+    def generate_messages_periodic(self):
+        if not self.has_periodic_call_occurred:
+            self.has_periodic_call_occurred = True
+            self.previous_time = time.time()
+        current_time = time.time()
+        self.message["Unix"] = current_time
+        self.message["DeltaTimeSeconds"] = current_time - self.previous_time
+        self.previous_time = current_time
+
+
+
+

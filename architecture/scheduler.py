@@ -1,4 +1,4 @@
-from architecture.architecture_relationships import Command, Subscriber, Topic, Message
+from architecture.architecture_relationships import Command, Subscriber, Topic, Message, SystemTimeTopic
 from pyrose_math.graph_theory import dependency_sort, cycle_is_present_in_any
 from pyrose_exceptions.pyros_exceptions import TopicCircularDependency, TopicNameCollision, SubscriberNameCollision
 from architecture.OnRobotUDP import start_client, send_data_to_server
@@ -11,6 +11,7 @@ import architecture.topicLogUtil as topicLogUtil
 
 class Scheduler:
     def __init__(self, is_sim=False, file_reading_name=None, enable_coms=False):
+        self.sysTimeTopic = SystemTimeTopic()
         self.topics = []
         self.subscribers = []
         self.is_sim = is_sim
@@ -31,6 +32,8 @@ class Scheduler:
     def initialize(self):
 
         self.has_initialize_been_called = True
+
+        self.add_topics(self.sysTimeTopic)
 
         self.topics = dependency_sort(self.topics)
 

@@ -73,7 +73,7 @@ def main():
             _, data = parse_line(data)
 
             data = json.loads(data)
-            start = time.time()
+            print(data)
             update_triads(data)
         except socket.error:
             pass
