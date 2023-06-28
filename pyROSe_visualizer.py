@@ -7,7 +7,7 @@ import select
 import cProfile
 
 TYPES_3D_PLOT = {
-    "POSE3D": ["X", "Y", "Z"],
+    "TRANSLATION3D": ["X", "Y", "Z"],
     "ANGLE_RAD": ["X", "Y", "Z"],
     "ORIENTATION_RAD": ["X", "Y", "Z"],
 }
@@ -26,6 +26,7 @@ ax.set_xlim(0.3, 0.7)
 ax.set_ylim(0.3, 0.7)
 ax.set_zlim(0.3, 0.7)
 triads_lock = threading.Lock()
+triads["ORIGIN"] = TriadVector(ax,origin=[0,0,0],length=0.1)
 
 
 def update_triads(data):
@@ -39,9 +40,8 @@ def update_triads(data):
                         triads[triad_key] = TriadVector(ax, origin=[0.5, 0.5, 0.5], length=0.1)
                     split_data = split_outside_brackets(data[key])
                     vector_data = json.loads(split_data[0])
-                    print(triads)
 
-                    if "POSE3D" in type_:
+                    if "TRANSLATION3D" in type_:
                         triads[triad_key].set_position([vector_data["X"], vector_data["Y"], vector_data["Z"]])
                     elif "ANGLE_RAD" in type_ or "ORIENTATION_RAD" in type_:
                         triads[triad_key].set_rotation([vector_data["X"], vector_data["Y"], vector_data["Z"]])
@@ -73,9 +73,7 @@ def main():
             _, data = parse_line(data)
 
             data = json.loads(data)
-            print(time.time() - start)
             start = time.time()
-            print(data)
             update_triads(data)
         except socket.error:
             pass
