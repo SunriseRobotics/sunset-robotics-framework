@@ -143,22 +143,23 @@ class ParallelCommand(Command):
 
 
 class DelayCommand(Command):
-    def __init__(self, delay_time_s, name="Delay Command"):
-        super().__init__([])
+    def __init__(self, delay_time_s, timer: 'SystemTimeTopic', name="Delay Command"):
+        super().__init__([timer])
         self.start_time = None
         self.delay_time = delay_time_s
         self.name = name
         self.first_run_occurred = False
+        self.timer_subsystem = timer
 
     def first_run_behavior(self):
-        self.start_time = time.time()
+        self.start_time = self.timer_subsystem.message["Unix"]
         self.first_run_occurred = True
 
     def periodic(self):
         pass
 
     def is_complete(self):
-        return time.time() - self.start_time >= self.delay_time
+        return self.timer_subsystem.message["Unix"] - self.start_time >= self.delay_time
 
 
 class Topic(Subscriber):
