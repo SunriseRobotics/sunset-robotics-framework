@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b0bda284-baa0-4355-8f5c-4ef2507f07ba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/architecture/architecture_relationships.py" beforeDir="false" afterPath="$PROJECT_DIR$/architecture/architecture_relationships.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AutomaticControl/BasicControl.py" beforeDir="false" afterPath="$PROJECT_DIR$/AutomaticControl/BasicControl.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +133,7 @@
     <SUITE FILE_PATH="coverage/pyros$animation.coverage" NAME="animation Coverage Results" MODIFIED="1687887051002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Library/Python/3.8/lib/python/site-packages/matplotlib" />
     <SUITE FILE_PATH="coverage/pyros$triad.coverage" NAME="triad Coverage Results" MODIFIED="1687886919125" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/visualization" />
     <SUITE FILE_PATH="coverage/pyros$.coverage" NAME=" Coverage Results" MODIFIED="1687984122034" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pyros$pyROSe_visualizer.coverage" NAME="pyROSe_visualizer Coverage Results" MODIFIED="1687984125824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$pyROSe_visualizer.coverage" NAME="pyROSe_visualizer Coverage Results" MODIFIED="1687984702629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyros$test_motor.coverage" NAME="test_motor Coverage Results" MODIFIED="1687963172756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyros$networkx_test.coverage" NAME="networkx_test Coverage Results" MODIFIED="1687877839444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

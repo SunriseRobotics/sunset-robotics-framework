@@ -37,3 +37,5 @@ def calculateDerivativePositionControl(kp, kv, ka):
     return max(2 * np.sqrt(ka * kp) - kv, 0)
 
 
+def derivativeFromFeedforward(kp: float, feedforward: SimpleFeedforward):
+    return max(2 * np.sqrt(feedforward.kA * kp) - feedforward.kV, 0)
