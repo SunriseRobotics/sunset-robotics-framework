@@ -4,6 +4,47 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+class RectangularPrism:
+    def __init__(self, ax, origin, dimensions=(1, 1, 1)):
+        self.ax = ax
+        self.origin = np.array(origin)
+        self.dimensions = dimensions
+        self.rotation_data = None
+        # Create a dictionary of lines
+        self.lines = {}
+
+    def set_position(self, position):
+        self.origin = np.array(position)
+        # Update lines' positions
+        if self.rotation_data is not None:
+            rotation_matrix = TriadVector.rotation_matrix(*self.rotation_data)
+            self.draw_rectangular_prism(rotation_matrix)
+
+    def set_rotation(self, angles):
+        # Generate rotation matrix from Euler angles
+        rotation_matrix = TriadVector.rotation_matrix(*angles)
+        # Rotate and draw rectangular prism
+        self.draw_rectangular_prism(rotation_matrix)
+
+    def draw_rectangular_prism(self, rotation_matrix):
+        print('rectangle draw called')
+        # Calculate vertices of the rectangular prism
+        vertices = [np.dot(rotation_matrix, np.array([x, y, z])) * self.dimensions + self.origin for x in (-0.5, 0.5)
+                    for y in (-0.5, 0.5) for z in (-0.5, 0.5)]
+        # Remove existing lines
+        for line in self.lines.values():
+            line.remove()
+        self.lines.clear()
+        # Draw lines between vertices
+        for i in range(4):
+            for j in range(4):
+                if i != j and abs(i - j) != 2:
+                    self.lines[(i, j)] = self.ax.plot3D(*zip(vertices[i], vertices[j]), color='b')[0]
+
+    def get_artists(self):
+        return list(self.lines.values())
+
+
 class TriadVector:
     def __init__(self, ax, origin, length=1.0):
         self.ax = ax

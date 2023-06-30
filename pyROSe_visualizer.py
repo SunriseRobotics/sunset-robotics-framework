@@ -1,7 +1,7 @@
 import socket
 import threading
 from architecture.topicLogUtil import *
-from visualization.triad import *
+from visualization.VisualizerGeometry import *
 import time
 import select
 import cProfile
@@ -19,14 +19,17 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 4096 * 10)  # 1
 server_address = ('192.168.1.120', 12345)  # Change to your needs
 server_socket.bind(server_address)
 triads = {}
+rectangular_prisms = {}
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.set_xlim(0.3, 0.7)
-ax.set_ylim(0.3, 0.7)
-ax.set_zlim(0.3, 0.7)
+boundL, boundH = -1, 2
+ax.set_xlim(boundL, boundH)
+ax.set_ylim(boundL, boundH)
+ax.set_zlim(boundL, boundH)
 triads_lock = threading.Lock()
-triads["ORIGIN"] = TriadVector(ax,origin=[0,0,0],length=0.1)
+triads["ORIGIN"] = TriadVector(ax, origin=[0, 0, 0], length=0.1)
+rectangular_prisms["test"] = RectangularPrism(ax, origin=[0.1, 0.1, 0.1], dimensions=(1, 1, 1))
 
 
 def update_triads(data):
@@ -55,23 +58,25 @@ def update(_):
                 triad.set_rotation(triad.rotation_data)
                 artists.extend(triad.get_artists())
 
+        for key, prism in rectangular_prisms.items():
+            if prism.rotation_data is not None:
+                prism.set_rotation(prism.rotation_data)
+                artists.extend(prism.get_artists())
+
         ax.figure.canvas.draw()
         ax.figure.canvas.flush_events()
         return artists
 
 
 def main():
-    start = time.time()
     while True:
         try:
             # This will raise a socket.error exception if there's nothing to read
             data, address = server_socket.recvfrom(4096, socket.MSG_DONTWAIT)
             # Convert the data from a byte string to a string
             data = data.decode()
-
             # Convert the string to a JSON object
             _, data = parse_line(data)
-
             data = json.loads(data)
             print(data)
             update_triads(data)

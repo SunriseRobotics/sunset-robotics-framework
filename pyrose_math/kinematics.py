@@ -49,7 +49,8 @@ def microseconds(microseconds: float) -> tSeconds:
 
 
 class velocity(state1D):
-    def __init__(self, v) -> None:
+    def __init__(self, v=0.0) -> None:
+        super().__init__()
         self.v = v
 
     def updateViaDelta(self, dv: 'velocity'):
@@ -60,6 +61,11 @@ class velocity(state1D):
 
     def __add__(self, other: 'velocity'):
         return velocity(self.v + other.get())
+
+    def __truediv__(self, other):
+        if isinstance(other, velocity):
+            return velocity(self.v / other.get())
+        return velocity(self.v / other)
 
     def __sub__(self, other):
         if isinstance(other, velocity):
