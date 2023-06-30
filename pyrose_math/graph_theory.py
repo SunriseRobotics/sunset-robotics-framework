@@ -25,9 +25,9 @@ def dependency_sort(topics: list) -> list:
 
 
 def find_connected_subgraphs(topics: list) -> list:
-    '''
+    """
     Find all the connected subgraphs in the graph of topics and subscribers.
-    '''
+    """
     visited = set()
     subgraphs = []
 
@@ -49,21 +49,21 @@ def find_connected_subgraphs(topics: list) -> list:
     return subgraphs
 
 
-def is_cycle_present(connected_topics: list) -> list:
-    '''
+def is_cycle_present(connected_topics: list) -> bool:
+    """
     determines if the topics have a cycle, indicating a circular dependency.
-    '''
-    tortise = connected_topics[0]
+    """
+    tortoise = connected_topics[0]
     hare = connected_topics[0]
 
     while True:
 
-        if len(tortise.subscribers) == 0:
-            # if the tortise has gotten to the end with no remaining subscribers, then there is no cycle
+        if len(tortoise.subscribers) == 0:
+            # if the tortoise has gotten to the end with no remaining subscribers, then there is no cycle
             return False
-        tortise = tortise.subscribers[0]
+        tortoise = tortoise.subscribers[0]
 
-        # hare moves twice as fast as tortise
+        # hare moves twice as fast as tortoise
         if len(hare.subscribers) == 0:
             # if the hare has gotten to the end with no remaining subscribers, then there is no cycle
             return False
@@ -75,15 +75,16 @@ def is_cycle_present(connected_topics: list) -> list:
 
         hare = hare.subscribers[0]
 
-        # if hare or tortise is not a subclass of Topic, then there is no cycle
-        if not isinstance(hare, Topic) or not isinstance(tortise, Topic):
+        # if hare or tortoise is not a subclass of Topic, then there is no cycle
+        if not isinstance(hare, Topic) or not isinstance(tortoise, Topic):
             return False
 
         if hare is None or len(hare.subscribers) == 0:
-            # if there is no hare, or if the hare has gotten to the end with no remaining subscribers, then there is no cycle
+            # if there is no hare, or if the hare has gotten to the end with no remaining subscribers, then there is
+            # no cycle
             return False
-        if hare == tortise:
-            # if the hare and tortise are the same, then there is a cycle
+        if hare == tortoise:
+            # if the hare and tortoise are the same, then there is a cycle
             return True
 
 
