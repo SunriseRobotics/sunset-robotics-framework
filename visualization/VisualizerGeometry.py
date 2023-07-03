@@ -53,6 +53,7 @@ class TriadVector:
         self.unit_vectors = {'x': np.array([1, 0, 0]), 'y': np.array([0, 1, 0]), 'z': np.array([0, 0, 1])}
         self.colors = {'x': 'r', 'y': 'g', 'z': 'b'}
         self.rotation_data = None
+        self.orientation = np.array([0, 0, 0])
         # Create a dictionary of lines
         self.lines = {hat: self.ax.plot3D(*zip(self.origin, self.origin + self.length * uv), color=color)[0] for
                       hat, uv, color in zip(self.unit_vectors.keys(), self.unit_vectors.values(), self.colors.values())}
@@ -73,6 +74,7 @@ class TriadVector:
         # implement
 
     def set_rotation(self, angles):
+        self.orientation = angles
         # Generate rotation matrix from Euler angles
         rotation_matrix = self.rotation_matrix(*angles)
         # Rotate unit vectors
