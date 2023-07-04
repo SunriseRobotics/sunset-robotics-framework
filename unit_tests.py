@@ -1,4 +1,3 @@
-from pyrose_math.kinematics import *
 from pyrose_math.geometry import *
 from pyrose_math.TrapezoidProfile import *
 from pyrose_math.graph_theory import *
@@ -6,6 +5,7 @@ from architecture.scheduler import Scheduler
 from architecture.architecture_relationships import *
 import unittest
 from unittest.mock import patch
+import math
 
 
 class TestCommand(Command):
@@ -118,96 +118,6 @@ class ArchitectureRelationshipsTest(unittest.TestCase):
         with patch.object(subscriber, 'store_messages', wraps=subscriber.store_messages) as mocked_method:
             topic.publish_periodic()
             mocked_method.assert_called_once()
-
-
-class TestTwist2DMethods(unittest.TestCase):
-    def test_twist_to_transform_straight_line(self):
-        twist = Twist2D(velocity(5), velocity(0), 0)
-        time = seconds(1)
-        transform = twist.twist_to_pose(time)
-        self.assertAlmostEqual(transform.x.get(), 5)
-        self.assertAlmostEqual(transform.y.get(), 0)
-        self.assertAlmostEqual(transform.theta, 0)
-
-    def test_twist_to_transform_circular_path(self):
-        twist = Twist2D(vx=velocity(0), vy=velocity(5), wTheta=math.pi / 2)
-        transform = twist.twist_to_pose(seconds(1))
-
-        # The expected position would be (10/pi, 10/pi)
-        self.assertAlmostEqual(transform.x.get(), 3.183098861837907)
-        self.assertAlmostEqual(transform.y.get(), 3.183098861837907)
-
-    def test_twist_to_transform_zero_time(self):
-        twist = Twist2D(velocity(5), velocity(0), math.pi / 2)
-        time = seconds(0)
-        transform = twist.twist_to_pose(time)
-        self.assertAlmostEqual(transform.x.get(), 0)
-        self.assertAlmostEqual(transform.y.get(), 0)
-        self.assertAlmostEqual(transform.theta, 0)
-
-
-class TestStateMethods(unittest.TestCase):
-
-    def test_seconds(self):
-        self.assertEqual(seconds(5).seconds, 5)
-
-    def test_milliseconds(self):
-        self.assertAlmostEqual(milliseconds(5000).seconds, 5)
-
-    def test_microseconds(self):
-        self.assertAlmostEqual(microseconds(5000000).seconds, 5)
-
-    def test_tSeconds_add(self):
-        time1 = seconds(5)
-        time2 = seconds(7)
-        self.assertEqual((time1 + time2).seconds, 12)
-
-    def test_tSeconds_sub(self):
-        time1 = seconds(5)
-        time2 = seconds(7)
-        self.assertEqual((time2 - time1).seconds, 2)
-
-    def test_velocity_mul(self):
-        v = velocity(3)
-        self.assertEqual((v * 2).get(), 6)
-
-    def test_velocity_add(self):
-        v1 = velocity(3)
-        v2 = velocity(5)
-        self.assertEqual((v1 + v2).get(), 8)
-
-    def test_velocity_sub(self):
-        v1 = velocity(3)
-        v2 = velocity(5)
-        self.assertEqual((v2 - v1).get(), 2)
-
-    def test_position_mul(self):
-        p = position(3)
-        self.assertEqual((p * 2).get(), 6)
-
-    def test_position_add(self):
-        p1 = position(3)
-        p2 = position(5)
-        self.assertEqual((p1 + p2).get(), 8)
-
-    def test_position_sub(self):
-        p1 = position(3)
-        p2 = position(5)
-        self.assertEqual((p2 - p1).get(), 2)
-
-    def test_vec2_add(self):
-        v1 = vec2(position(1), position(2))
-        v2 = vec2(position(2), position(3))
-        v1.add(v2)
-        self.assertEqual(v1.x.get(), 3)
-        self.assertEqual(v1.y.get(), 5)
-
-    def test_vec2_sub(self):
-        v1 = vec2(position(1), position(2))
-        v2 = vec2(position(2), position(3))
-        v1.sub(v2)
-        self.assertEqual(v1.x.get(), -1)
-        self.assertEqual(v1.y.get(), -1)
 
 
 class TestTrapezoidProfile(unittest.TestCase):
@@ -434,46 +344,6 @@ class TestQuaternion(unittest.TestCase):
             [1, 0, 0],
             [0, 0, 1]
         ]), atol=1e-6)
-
-
-class TestRotation3D(unittest.TestCase):
-    def test_add(self):
-        r1 = Rotation3D(0, np.pi / 2, np.pi)
-        r2 = Rotation3D(np.pi / 2, np.pi, 0)
-        r3 = r1 + r2
-        self.assertEqual(r3.roll, np.pi / 2)
-        self.assertEqual(r3.pitch, np.pi * 1.5)
-        self.assertEqual(r3.yaw, np.pi)
-
-    # Add more tests for other methods as needed...
-
-
-class TestPose3D(unittest.TestCase):
-    def test_add(self):
-        p1 = Pose3D(1, 2, 3, Rotation3D(0, 0, 0))
-        p2 = Pose3D(4, 5, 6, Rotation3D(np.pi / 2, np.pi / 2, np.pi / 2))
-        p3 = p1 + p2
-        self.assertEqual(p3.x, 5)
-        self.assertEqual(p3.y, 7)
-        self.assertEqual(p3.z, 9)
-        self.assertEqual(p3.rotation.roll, np.pi / 2)
-        self.assertEqual(p3.rotation.pitch, np.pi / 2)
-        self.assertEqual(p3.rotation.yaw, np.pi / 2)
-
-    # Add more tests for other methods as needed...
-
-
-class TestTwist3D(unittest.TestCase):
-    def test_add(self):
-        t1 = Twist3D(velocity(1), velocity(2), velocity(3), velocity(4), velocity(5), velocity(6))
-        t2 = Twist3D(velocity(7), velocity(8), velocity(9), velocity(10), velocity(11), velocity(12))
-        t3 = t1 + t2
-        self.assertEqual(t3.vx, 8)
-        self.assertEqual(t3.vy, 10)
-        self.assertEqual(t3.vz, 12)
-        self.assertEqual(t3.wRoll, 14)
-        self.assertEqual(t3.wPitch, 16)
-        self.assertEqual(t3.wYaw, 18)
 
 
 class TestSO3(unittest.TestCase):

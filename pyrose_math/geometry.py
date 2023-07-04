@@ -1,36 +1,5 @@
 import numpy as np
-import math
 
-from pyrose_math.kinematics import *
-
-
-def matrix_exponential(mat):
-    """
-    Compute the matrix exponential using a power series.
-
-    :param mat: numpy.ndarray, input matrix
-    :return: numpy.ndarray, the exponential of the input matrix
-    """
-    # Identity matrix of the same shape as input matrix
-    I = np.eye(*mat.shape)
-
-    # Initialize result to the identity matrix
-    result = np.copy(I)
-
-    # Power of matrix
-    mat_power = np.copy(mat)
-
-    # Factorial term
-    factorial = 1
-
-    # Sum the series up to some finite number of terms
-    # The larger this number, the more accurate the result will be
-    for n in range(1, 20):
-        factorial *= n
-        result += mat_power / factorial
-        mat_power = np.dot(mat_power, mat)
-
-    return result
 
 class Quaternion:
     def __init__(self, w, x, y, z):
@@ -114,7 +83,8 @@ class SE3:
     """
     Lie group to represent a 3D spatial transformation from a given reference frame
     """
-    def __init__(self, rotation, translation):
+
+    def __init__(self, rotation: SO3, translation):
         self.rotation = rotation
         self.translation = translation
 
@@ -187,166 +157,30 @@ class SE3:
         return SE3.from_twist(twist)
 
 
-class Rotation3D:
-    def __init__(self, roll: float, pitch: float, yaw: float) -> None:
-        self.roll = roll
-        self.pitch = pitch
-        self.yaw = yaw
+def matrix_exponential(mat):
+    """
+    Compute the matrix exponential using a power series.
 
-    def __add__(self, other: 'Rotation3D'):
-        return Rotation3D(self.roll + other.roll, self.pitch + other.pitch, self.yaw + other.yaw)
+    :param mat: numpy.ndarray, input matrix
+    :return: numpy.ndarray, the exponential of the input matrix
+    """
+    # Identity matrix of the same shape as input matrix
+    I = np.eye(*mat.shape)
 
-    def normalize_angles(self):
-        self.roll = self.roll % (2 * math.pi)
-        self.pitch = self.pitch % (2 * math.pi)
-        self.yaw = self.yaw % (2 * math.pi)
+    # Initialize result to the identity matrix
+    result = np.copy(I)
 
-    def __sub__(self, other: 'Rotation3D'):
-        return Rotation3D(self.roll - other.roll, self.pitch - other.pitch, self.yaw - other.yaw)
+    # Power of matrix
+    mat_power = np.copy(mat)
 
-    def __mul__(self, other: 'Rotation3D'):
-        return Rotation3D(self.roll * other.roll, self.pitch * other.pitch, self.yaw * other.yaw)
+    # Factorial term
+    factorial = 1
 
-    def __truediv__(self, other: 'Rotation3D'):
-        return Rotation3D(self.roll / other.roll, self.pitch / other.pitch, self.yaw / other.yaw)
+    # Sum the series up to some finite number of terms
+    # The larger this number, the more accurate the result will be
+    for n in range(1, 20):
+        factorial *= n
+        result += mat_power / factorial
+        mat_power = np.dot(mat_power, mat)
 
-    def __floordiv__(self, other: 'Rotation3D'):
-        return Rotation3D(self.roll // other.roll, self.pitch // other.pitch, self.yaw // other.yaw)
-
-    def __mod__(self, other: 'Rotation3D'):
-        return Rotation3D(self.roll % other.roll, self.pitch % other.pitch, self.yaw % other.yaw)
-
-    def __pow__(self, other: 'Rotation3D'):
-        return Rotation3D(self.roll ** other.roll, self.pitch ** other.pitch, self.yaw ** other.yaw)
-
-    def __eq__(self, other: 'Rotation3D'):
-        self.normalize_angles()
-        other.normalize_angles()
-        return self.roll == other.roll and self.pitch == other.pitch and self.yaw == other.yaw
-
-
-class Pose3D:
-    def __init__(self, x: position, y: position, z: position, rotation: Rotation3D) -> None:
-        self.x = x
-        self.y = y
-        self.z = z
-        self.rotation = rotation
-
-    def __add__(self, other: 'Pose3D'):
-        return Pose3D(self.x + other.x, self.y + other.y, self.z + other.z, self.rotation + other.rotation)
-
-    def __sub__(self, other: 'Pose3D'):
-        return Pose3D(self.x - other.x, self.y - other.y, self.z - other.z, self.rotation - other.rotation)
-
-    def __mul__(self, other: 'Pose3D'):
-        return Pose3D(self.x * other.x, self.y * other.y, self.z * other.z, self.rotation * other.rotation)
-
-    def __truediv__(self, other: 'Pose3D'):
-        return Pose3D(self.x / other.x, self.y / other.y, self.z / other.z, self.rotation / other.rotation)
-
-    def __floordiv__(self, other: 'Pose3D'):
-        return Pose3D(self.x // other.x, self.y // other.y, self.z // other.z, self.rotation // other.rotation)
-
-
-class Twist3D:
-    def __init__(self, vx: velocity, vy: velocity, vz: velocity, wRoll: velocity, wPitch: velocity, wYaw: velocity):
-        self.vx = vx
-        self.vy = vy
-        self.vz = vz
-        self.wRoll = wRoll
-        self.wPitch = wPitch
-        self.wYaw = wYaw
-
-    def __add__(self, other: 'Twist3D'):
-        return Twist3D(self.vx + other.vx, self.vy + other.vy, self.vz + other.vz, self.wRoll + other.wRoll,
-                       self.wPitch + other.wPitch, self.wYaw + other.wYaw)
-
-    def __sub__(self, other: 'Twist3D'):
-        return Twist3D(self.vx - other.vx, self.vy - other.vy, self.vz - other.vz, self.wRoll - other.wRoll,
-                       self.wPitch - other.wPitch, self.wYaw - other.wYaw)
-
-    def twist_to_pose(self, time: tSeconds) -> 'Pose3D':
-        # Integrate linear velocities
-        dx = self.vx.getAsPositionDelta(time)
-        dy = self.vy.getAsPositionDelta(time)
-        dz = self.vz.getAsPositionDelta(time)
-        translation = vec3(dx, dy, dz)
-
-        # Convert angular velocities to quaternion
-        angular_velocity = velocity(np.sqrt(self.wRoll.get() ** 2 + self.wPitch.get() ** 2 + self.wYaw.get() ** 2))
-        axis_of_rotation = np.array([self.wRoll, self.wPitch, self.wYaw]) / angular_velocity
-        dtheta = angular_velocity * time.seconds
-        rotation = Quaternion.from_angle_axis(dtheta, axis_of_rotation)
-
-        return Pose3D(translation.x,translation.y,translation.z, rotation)
-
-
-class Twist2D:
-    def __init__(self, vx: velocity, vy: velocity, wTheta: velocity):
-        self.vx = vx
-        self.vy = vy
-        self.wTheta = wTheta
-
-    def __add__(self, other: 'Twist2D'):
-        return Twist2D(self.vx + other.vx, self.vy + other.vy, self.wTheta + other.wTheta)
-
-    def __sub__(self, other: 'Twist2D'):
-        return Twist2D(self.vx - other.vx, self.vy - other.vy, self.wTheta - other.wTheta)
-
-    def twist_to_pose(self, time: tSeconds) -> 'Pose2D':
-        # Integrate angular velocity to get change in orientation
-        theta = self.wTheta * time.seconds
-
-        # If angular velocity is zero, we are moving in a straight line
-        if abs(self.wTheta) < 1e-9:
-            dx = self.vx.getAsPositionDelta(time)
-            dy = self.vy.getAsPositionDelta(time)
-        else:
-            # Otherwise, we are moving along a circular arc
-            radius = np.sqrt(self.vx.get() ** 2 + self.vy.get() ** 2) / self.wTheta  # radius of curvature
-            dx = radius * np.sin(theta)  # change in x position
-            dy = radius * (1 - np.cos(theta))  # change in y position
-            dx = position(dx)
-            dy = position(dy)
-        return Pose2D(dx, dy, theta)
-
-    def twist_to_pose_dtheta(self, time: tSeconds, dtheta):
-        # Integrate angular velocity to get change in orientation
-        theta = dtheta
-
-        # If angular velocity is zero, we are moving in a straight line
-        if abs(self.wTheta) < 1e-9:
-            dx = self.vx.getAsPositionDelta(time)
-            dy = self.vy.getAsPositionDelta(time)
-        else:
-            # Otherwise, we are moving along a circular arc
-            radius = np.sqrt(self.vx.get() ** 2 + self.vy.get() ** 2) / self.wTheta  # radius of curvature
-            dx = radius * np.sin(theta)  # change in x position
-            dy = radius * (1 - np.cos(theta))  # change in y position
-            dx = position(dx)
-            dy = position(dy)
-        return Pose2D(dx, dy, theta)
-
-
-class Pose2D:
-    def __init__(self, x: position, y: position, theta: float):
-        self.x = x
-        self.y = y
-        self.theta = theta
-
-    def rotateThenAdd(self, other: 'Pose2D'):
-        # Rotate the translation part of 'other' by the rotation part of 'self', then add to self's translation
-        newX = self.x.get() + other.x.get() * math.cos(self.theta) - other.y.get() * math.sin(self.theta)
-        newY = self.y.get() + other.x.get() * math.sin(self.theta) + other.y.get() * math.cos(self.theta)
-
-        # Add the rotations
-        newTheta = self.theta + other.theta
-
-        return Pose2D(position(newX), position(newY), newTheta)
-
-    def __add__(self, other: 'Pose2D'):
-        return Pose2D(self.x + other.x, self.y + other.y, self.theta + other.theta)
-
-    def __sub__(self, other: 'Pose2D'):
-        return Pose2D(self.x - other.x, self.y - other.y, self.theta - other.theta)
-
+    return result
