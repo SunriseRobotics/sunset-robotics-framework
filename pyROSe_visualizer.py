@@ -8,6 +8,7 @@ TYPES_3D_PLOT = {
     "TRANSLATION3D": ["X", "Y", "Z"],
     "ANGLE_RAD": ["X", "Y", "Z"],
     "ORIENTATION_RAD": ["X", "Y", "Z"],
+    "POSE2D": ["X", "Y", "THETA"]
 }
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -16,7 +17,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 4096 * 10)  # 1
 # Bind the socket to a specific address and port
 
 ortho_ip = '192.168.1.120'
-rt_proto_ip = '192.168.13.201'
+rt_proto_ip = '192.168.96.201'
 
 server_address = (rt_proto_ip, 12345)  # Change to your needs
 server_socket.bind(server_address)
@@ -55,6 +56,9 @@ def update_triads(data):
                         triads[triad_key].set_position([vector_data["X"], vector_data["Y"], vector_data["Z"]])
                     elif "ANGLE_RAD" in type_ or "ORIENTATION_RAD" in type_:
                         triads[triad_key].set_rotation([vector_data["X"], vector_data["Y"], vector_data["Z"]])
+                    elif "POSE2D" in type_:
+                        triads[triad_key].set_position([vector_data["X"], vector_data["Y"], 0])
+                        triads[triad_key].set_rotation([0, 0, vector_data["THETA"]])
 
 
 def user_commands():
@@ -161,10 +165,10 @@ def main():
 
 if __name__ == "__main__":
     server_thread = threading.Thread(target=main)
-    user_command_thread = threading.Thread(target=user_commands)
+    # user_command_thread = threading.Thread(target=user_commands)
 
     server_thread.start()
-    user_command_thread.start()
+    # user_command_thread.start()
 
     ani = FuncAnimation(fig, update, blit=True, interval=50, repeat=False, cache_frame_data=True)
     plt.show()
