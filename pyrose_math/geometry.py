@@ -349,3 +349,4 @@ class Pose2D:
 
     def __sub__(self, other: 'Pose2D'):
         return Pose2D(self.x - other.x, self.y - other.y, self.theta - other.theta)
+

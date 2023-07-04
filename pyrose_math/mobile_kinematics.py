@@ -1,4 +1,4 @@
-from geometry import Twist3D
+from pyrose_math.geometry import Twist3D
 from kinematics import velocity
 
 
