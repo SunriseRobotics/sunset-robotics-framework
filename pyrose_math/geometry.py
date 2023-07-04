@@ -4,6 +4,34 @@ import math
 from pyrose_math.kinematics import *
 
 
+def matrix_exponential(mat):
+    """
+    Compute the matrix exponential using a power series.
+
+    :param mat: numpy.ndarray, input matrix
+    :return: numpy.ndarray, the exponential of the input matrix
+    """
+    # Identity matrix of the same shape as input matrix
+    I = np.eye(*mat.shape)
+
+    # Initialize result to the identity matrix
+    result = np.copy(I)
+
+    # Power of matrix
+    mat_power = np.copy(mat)
+
+    # Factorial term
+    factorial = 1
+
+    # Sum the series up to some finite number of terms
+    # The larger this number, the more accurate the result will be
+    for n in range(1, 20):
+        factorial *= n
+        result += mat_power / factorial
+        mat_power = np.dot(mat_power, mat)
+
+    return result
+
 class Quaternion:
     def __init__(self, w, x, y, z):
         self.w = w
@@ -111,6 +139,42 @@ class SE3:
         other_to_origin = other.inverse()
         return other_to_origin * self
 
+    @staticmethod
+    def from_twist(twist):
+        """
+        Given a 6D twist vector, computes the change in position as a SE3 transformation.
+
+        The twist vector should be in the following format:
+        twist = [v_x, v_y, v_z, ω_x, ω_y, ω_z]
+        where v is linear velocity and ω is angular velocity.
+        """
+        # Reshape the twist vector into a 4x4 se(3) matrix
+        se3_mat = np.array([[0, -twist[5], twist[4], twist[0]],
+                            [twist[5], 0, -twist[3], twist[1]],
+                            [-twist[4], twist[3], 0, twist[2]],
+                            [0, 0, 0, 0]])
+
+        # Compute the matrix exponential to get the SE3 transformation
+        SE3_mat = matrix_exponential(se3_mat)
+
+        # Split into 3x3 rotation matrix and 3x1 translation vector
+        rotation = SO3(SE3_mat[:3, :3])
+        translation = SE3_mat[:3, 3]
+
+        return SE3(rotation, translation)
+
+    @staticmethod
+    def from_angular_and_linear_velocities(linear_vel, roll_vel, pitch_vel, yaw_vel):
+        """
+        Given angular velocities (roll, pitch, yaw) and a 3D linear velocity vector,
+        computes the change in position as a SE3 transformation.
+        """
+        # Compose the twist vector
+        twist = np.array([linear_vel[0], linear_vel[1], linear_vel[2], roll_vel, pitch_vel, yaw_vel])
+
+        # Call the from_twist method to get the SE3 transformation
+        return SE3.from_twist(twist)
+
 
 class Rotation3D:
     def __init__(self, roll: float, pitch: float, yaw: float) -> None:
@@ -198,12 +262,12 @@ class Twist3D:
         translation = vec3(dx, dy, dz)
 
         # Convert angular velocities to quaternion
-        angular_velocity = np.sqrt(self.wRoll ** 2 + self.wPitch ** 2 + self.wYaw ** 2)
+        angular_velocity = velocity(np.sqrt(self.wRoll.get() ** 2 + self.wPitch.get() ** 2 + self.wYaw.get() ** 2))
         axis_of_rotation = np.array([self.wRoll, self.wPitch, self.wYaw]) / angular_velocity
         dtheta = angular_velocity * time.seconds
         rotation = Quaternion.from_angle_axis(dtheta, axis_of_rotation)
 
-        return Pose3D(translation, rotation)
+        return Pose3D(translation.x,translation.y,translation.z, rotation)
 
 
 class Twist2D:

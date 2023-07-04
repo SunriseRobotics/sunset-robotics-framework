@@ -1,11 +1,8 @@
 import socket
 import threading
+
 from architecture.topicLogUtil import *
 from visualization.VisualizerGeometry import *
-import numpy as np
-import time
-import select
-import cProfile
 
 TYPES_3D_PLOT = {
     "TRANSLATION3D": ["X", "Y", "Z"],
