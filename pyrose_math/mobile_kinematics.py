@@ -1,5 +1,5 @@
 from pyrose_math.geometry import Twist3D
-from kinematics import velocity
+from pyrose_math.kinematics import velocity
 
 
 class MecanumWheelSpeeds:
