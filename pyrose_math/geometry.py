@@ -98,6 +98,17 @@ class SO3:
     def rotate(self, vec):
         return np.dot(self.rotation_matrix, vec)
 
+    def to_euler(self):
+        """
+        Convert the rotation matrix to Euler angles using the 'zyx' convention.
+        """
+        R = self.rotation_matrix
+        yaw = np.arctan2(R[1, 0], R[0, 0])
+        pitch = np.arctan2(-R[2, 0], np.sqrt(R[0, 0] ** 2 + R[1, 0] ** 2))
+        roll = np.arctan2(R[2, 1], R[2, 2])
+
+        return roll, pitch, yaw
+
 
 class SE3:
     """
