@@ -42,11 +42,11 @@ class MecanumKinematics:
     def __init__(self, track_width):
         self.track_width = track_width
 
-    def wheelVelocityToTwistRobot(self, ws: MecanumWheelSpeeds) -> Twist3D:
+    def wheelVelocityToTwistRobot(self, ws: MecanumWheelSpeeds) -> tuple:
         vx = (ws.frontLeft + ws.frontRight + ws.backLeft + ws.backRight) / 4
         vy = (ws.backLeft + ws.frontRight - ws.frontLeft - ws.backRight) / 4
         omega = (ws.backRight + ws.frontRight - ws.frontLeft - ws.backLeft) / (4 * self.track_width)
-        return Twist3D(vx, vy, velocity(0), velocity(0), velocity(0), omega)
+        return vx, vy, velocity(0), velocity(0), velocity(0), omega
 
     def robotTwistToWheelSpeeds(self, rv: Twist3D) -> MecanumWheelSpeeds:
         fl = rv.vx - rv.vy - (self.track_width * rv.wYaw)
