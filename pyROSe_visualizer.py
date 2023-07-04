@@ -17,7 +17,11 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 4096 * 10)  # 10 times the previous buffer size
 
 # Bind the socket to a specific address and port
-server_address = ('192.168.1.120', 12345)  # Change to your needs
+
+ortho_ip = '192.168.1.120'
+rt_proto_ip = '192.168.13.201'
+
+server_address = (rt_proto_ip, 12345)  # Change to your needs
 server_socket.bind(server_address)
 triads = {}
 rectangular_prisms = {}
@@ -152,6 +156,7 @@ def main():
             # Convert the string to a JSON object
             _, data = parse_line(data)
             data = json.loads(data)
+            print(data)
             update_triads(data)
         except socket.error:
             pass
