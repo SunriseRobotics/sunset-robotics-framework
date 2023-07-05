@@ -8,7 +8,9 @@ TYPES_3D_PLOT = {
     "TRANSLATION3D": ["X", "Y", "Z"],
     "ANGLE_RAD": ["X", "Y", "Z"],
     "ORIENTATION_RAD": ["X", "Y", "Z"],
-    "POSE2D": ["X", "Y", "THETA"]
+    "POSE2D": ["X", "Y", "THETA"],
+    "SO3": ["ROLL", "PITCH", "YAW"],
+    "SE3": ["X", "Y", "Z", "ROLL", "PITCH", "YAW"]
 }
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -59,6 +61,11 @@ def update_triads(data):
                     elif "POSE2D" in type_:
                         triads[triad_key].set_position([vector_data["X"], vector_data["Y"], 0])
                         triads[triad_key].set_rotation([0, 0, vector_data["THETA"]])
+                    elif "SO3" in type_:
+                        triads[triad_key].set_rotation([vector_data["PITCH"], vector_data["ROLL"], vector_data["YAW"]])
+                    elif "SE3" in type_:
+                        triads[triad_key].set_rotation([vector_data["PITCH"], vector_data["ROLL"], vector_data["YAW"]])
+                        triads[triad_key].set_position([vector_data["X"], vector_data["Y"], vector_data["Z"]])
 
 
 def user_commands():

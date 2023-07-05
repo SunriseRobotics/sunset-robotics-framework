@@ -78,6 +78,10 @@ class SO3:
 
         return roll, pitch, yaw
 
+    def to_message_dict(self):
+        roll, pitch, yaw = self.to_euler()
+        return {"ROLL": roll, "PITCH": pitch, "YAW": yaw}
+
 
 class SE3:
     """
@@ -155,6 +159,11 @@ class SE3:
 
         # Call the from_twist method to get the SE3 transformation
         return SE3.from_twist(twist)
+
+    def to_message_dict(self):
+        roll, pitch, yaw = self.rotation.to_euler()
+        x, y, z = self.translation[0], self.translation[1], self.translation[2]
+        return {"X": x, "Y": y, "Z": z, "ROLL": roll, "PITCH": pitch, "YAW": yaw}
 
 
 def matrix_exponential(mat):
