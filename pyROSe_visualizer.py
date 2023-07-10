@@ -1,8 +1,10 @@
 import socket
 import threading
-
+import os
 from architecture.topicLogUtil import *
 from visualization.VisualizerGeometry import *
+from network_constants import *
+import paramiko
 
 TYPES_3D_PLOT = {
     "TRANSLATION3D": ["X", "Y", "Z"],
@@ -18,14 +20,13 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 4096 * 10)  # 1
 
 # Bind the socket to a specific address and port
 
-ortho_ip = '192.168.1.120'
-rt_proto_ip = '192.168.96.201'
 
-server_address = (rt_proto_ip, 12345)  # Change to your needs
+server_address = (visualizer_ip, 12345)  # Change to your needs
 server_socket.bind(server_address)
 triads = {}
 rectangular_prisms = {}
 
+plt.style.use("ggplot")
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 boundL, boundH = -1, 2
@@ -134,6 +135,9 @@ def user_commands():
                 print("Name: {} ; Position: (X:{} Y:{} Z:{}) "
                       "Orientation (deg): (Roll:{} Pitch:{} Yaw:{})"
                       .format(triad, x, y, z, np.degrees(roll), np.degrees(pitch), np.degrees(yaw)))
+        if command == "run":
+            file = user_input[1]
+            print('ssh ' + robot_hostname + '@' + robot_ip + ' "python3 ./Documents/pyROS/' + file + '"')
 
 
 def update(_):
@@ -164,18 +168,39 @@ def main():
             # Convert the string to a JSON object
             _, data = parse_line(data)
             data = json.loads(data)
-            print(data)
             update_triads(data)
         except socket.error:
             pass
 
 
+def run_script_on_rpi(hostname, port, username, password, script_name):
+    # Create a new SSH client
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    # Connect to the Raspberry Pi
+    client.connect(hostname, port, username, password)
+
+    # The command to run
+    command = f'python3 /Documents/pyROS/{script_name}'
+
+    # Execute the command
+    stdin, stdout, stderr = client.exec_command(command)
+
+    # Print any output from the command
+    for line in stdout:
+        print(line.strip('\n'))
+
+    # Close the connection
+    client.close()
+
+
 if __name__ == "__main__":
     server_thread = threading.Thread(target=main)
-    # user_command_thread = threading.Thread(target=user_commands)
+    user_command_thread = threading.Thread(target=user_commands)
 
     server_thread.start()
-    # user_command_thread.start()
+    user_command_thread.start()
 
     ani = FuncAnimation(fig, update, blit=True, interval=50, repeat=False, cache_frame_data=True)
     plt.show()
