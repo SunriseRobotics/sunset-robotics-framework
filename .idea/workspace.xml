@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0bda284-baa0-4355-8f5c-4ef2507f07ba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/network_constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network_constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/network_constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyROSe_visualizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyROSe_visualizer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -146,7 +145,7 @@
       <workItem from="1687877203266" duration="26000" />
       <workItem from="1687877237010" duration="1438000" />
       <workItem from="1688427894647" duration="20899000" />
-      <workItem from="1688870588629" duration="7228000" />
+      <workItem from="1688870588629" duration="7942000" />
     </task>
     <servers />
   </component>
