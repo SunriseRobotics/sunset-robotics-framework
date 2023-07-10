@@ -28,6 +28,7 @@ class Scheduler:
         self.num_runs_per_transmission = 100
         self.num_runs = 0
         self.debug = False
+        self.should_log = True
 
     def initialize(self):
 
@@ -115,7 +116,7 @@ class Scheduler:
         stored_messages_txt = "{0}, {1}\n".format(present_time, json.dumps(stored_messages))
 
         # write the messages to the log file
-        if not self.is_sim and stored_messages:
+        if not self.is_sim and stored_messages and self.should_log:
             with open(self.writing_file_name, 'a+') as self.f:
                 self.f.write(stored_messages_txt)
 
@@ -146,7 +147,7 @@ class Scheduler:
             self.subscribers.append(sub)
 
     def begin_log(self):
-        if not self.is_sim:
+        if not self.is_sim and self.should_log:
             self.writing_file_name = "log_" + str(int(time.time())) + ".csv"
             with open(self.writing_file_name, 'w') as self.f:
                 self.f.write("Time, TopicMessageDictionaries\n")

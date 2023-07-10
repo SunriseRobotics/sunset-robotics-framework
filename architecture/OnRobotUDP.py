@@ -21,7 +21,7 @@ def send_data_to_server(client_socket, server_address, message: str):
         return
 
     try:
-        sent = client_socket.sendto(message, server_address)
+        _ = client_socket.sendto(message, server_address)
     except Exception as e:
         print(e)
 
