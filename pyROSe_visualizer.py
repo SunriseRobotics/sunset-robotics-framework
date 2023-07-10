@@ -137,7 +137,7 @@ def user_commands():
                       .format(triad, x, y, z, np.degrees(roll), np.degrees(pitch), np.degrees(yaw)))
         if command == "run":
             file = user_input[1]
-            run_script_on_rpi()
+            run_script_on_rpi(robot_hostname, )
             print('ssh ' + robot_hostname + '@' + robot_ip + ' "python3 ./Documents/pyROS/' + file + '"')
 
 
