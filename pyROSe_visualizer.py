@@ -1,10 +1,11 @@
 import socket
 import threading
-import os
-from architecture.topicLogUtil import *
-from visualization.VisualizerGeometry import *
-from network_constants import *
+
 import paramiko
+
+from architecture.topicLogUtil import *
+from network_constants import *
+from visualization.VisualizerGeometry import *
 
 TYPES_3D_PLOT = {
     "TRANSLATION3D": ["X", "Y", "Z"],
@@ -137,8 +138,7 @@ def user_commands():
                       .format(triad, x, y, z, np.degrees(roll), np.degrees(pitch), np.degrees(yaw)))
         if command == "run":
             file = user_input[1]
-            run_script_on_rpi(robot_hostname, )
-            print('ssh ' + robot_hostname + '@' + robot_ip + ' "python3 ./Documents/pyROS/' + file + '"')
+            run_script_on_rpi(robot_hostname, robot_port, robot_hostname, robot_password, file)
 
 
 def update(_):
