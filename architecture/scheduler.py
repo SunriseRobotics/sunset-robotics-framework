@@ -34,6 +34,8 @@ class Scheduler:
         self.replay_start_time = 0
         self.initial_time_of_log = 0
         self.first_sim_run = True
+        self.present_time = 0
+
     def initialize(self):
 
         self.has_initialize_been_called = True
@@ -63,7 +65,6 @@ class Scheduler:
                                                                                      messages_contents)
             self.replay_start_time = time.time()
 
-
         if self.enable_coms:
             self.client_socket, self.server_address = start_client()
             print("UDP started on client side: {} {}".format(self.client_socket, self.server_address))
@@ -79,11 +80,18 @@ class Scheduler:
                 "Must call initialize before calling periodic otherwise hardware devices will not be connected...")
 
         stored_messages = {}
-        present_time = time.time()
+
+        if not self.is_sim:
+            self.present_time = time.time()
+
         if self.is_sim:
+            # since the unix time stamp of when the sim starts will be different
+            # then the time stamp when the robot started, we must offset to a zero-based index
             self.replay_time = time.time() - self.replay_start_time
+
+            # each time we run, if the present time
             if not self.first_sim_run:
-                if present_time - self.initial_time_of_log < self.replay_time:
+                if self.present_time - self.initial_time_of_log > self.replay_time:
                     return
 
             try:
@@ -108,7 +116,7 @@ class Scheduler:
         all_logged_messages = None
 
         if self.is_sim:
-            all_logged_messages = topicLogUtil.get_message_at_time(present_time, self.read_topics)
+            all_logged_messages = topicLogUtil.get_message_at_time(self.present_time, self.read_topics)
 
         for topic in self.topics:
             if self.is_sim and topic.replace_message_with_log:
@@ -127,7 +135,7 @@ class Scheduler:
                 stored_messages[topic.name] = "{0}, {1}, {2}".format(json.dumps(message.message), current_time_seconds,
                                                                      delta_time_seconds)
 
-        stored_messages_txt = "{0}, {1}\n".format(present_time, json.dumps(stored_messages))
+        stored_messages_txt = "{0}, {1}\n".format(self.present_time, json.dumps(stored_messages))
 
         # write the messages to the log file
         if not self.is_sim and stored_messages and self.should_log:
