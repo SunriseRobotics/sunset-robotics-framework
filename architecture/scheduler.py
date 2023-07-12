@@ -91,7 +91,7 @@ class Scheduler:
 
             # each time we run, if the present time
             if not self.first_sim_run:
-                if self.present_time - self.initial_time_of_log > self.replay_time:
+                if self.present_time - self.initial_time_of_log < self.replay_time:
                     return
 
             try:
