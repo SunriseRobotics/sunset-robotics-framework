@@ -116,6 +116,24 @@ class Command(ABC):
             raise TypeError("next_command must be an instance of Command")
 
 
+class DynamicCommand(Command, ABC):
+    def __init__(self, subscribers: list):
+        super().__init__(subscribers)
+        self.conditions = []
+        self.command_condition_pairs = {}
+
+    def setNextOption(self, nextCommand: Command, boolean_supplier):
+        self.conditions.append(boolean_supplier)
+        self.command_condition_pairs[boolean_supplier] = nextCommand
+
+    def is_complete(self) -> bool:
+        for condition in self.conditions:
+            if condition():
+                self.setNext(self.command_condition_pairs[condition])
+                return True
+        return False
+
+
 class ParallelCommand(Command):
     def __init__(self, commands, name="Parallel Command"):
         # The list of commands to run in parallel
@@ -233,6 +251,7 @@ class SystemTimeTopic(Topic):
     be debugged. Instead of using the python time module directly, pyROSe users are expected to utilize this topic.
     This enables accurate timing information to be recorded and then replayed in the pyROSe simulation mode.
     """
+
     def __init__(self, topic_name="SystemTime", is_sim=False):
         super().__init__(topic_name, is_sim)
         self.replace_message_with_log = True
@@ -249,7 +268,3 @@ class SystemTimeTopic(Topic):
         self.message["DeltaTimeSeconds"] = current_time - self.previous_time
         self.previous_time = current_time
         return self.message
-
-
-
-

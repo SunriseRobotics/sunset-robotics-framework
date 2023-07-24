@@ -401,7 +401,7 @@ class TestSE3(unittest.TestCase):
         origin = SE3(SO3.from_euler(0, 0, 0), np.array([0, 0, 0]))
         A = SE3.from_euler_and_translation(np.pi / 4, np.pi / 4, np.pi / 4, 1, 2, 3)
         B = SE3.from_euler_and_translation(np.pi / 2, np.pi / 2, np.pi / 2, 4, 5, 6)
-
+    
         # Test relative_to
         A_relative_to_B = A.relative_to(B)
         expected_relative = B.inverse() * A
