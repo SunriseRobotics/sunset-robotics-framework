@@ -165,7 +165,21 @@ class SE3:
         x, y, z = self.translation[0], self.translation[1], self.translation[2]
         return {"X": x, "Y": y, "Z": z, "ROLL": roll, "PITCH": pitch, "YAW": yaw}
 
+    def rotate_around(self, other: "SE3"):
+        """
+        Using the other SE3's position as the origin, rotate this by the others orientation as well.
+        """
+        # Shift the world so that the other object is at the origin
+        shifted = self.relative_to(other)
 
+        # Apply the rotation from the other object
+        rotated_position = other.rotation.rotate(shifted.translation)
+        rotated = SE3(shifted.rotation * other.rotation, rotated_position)
+
+        # Shift the world back
+        result = other * rotated
+
+        return result
 def matrix_exponential(mat):
     """
     Compute the matrix exponential using a power series.

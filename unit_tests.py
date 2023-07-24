@@ -396,12 +396,26 @@ class TestSE3(unittest.TestCase):
         self.assertTrue(np.allclose(transform_A_to_B.translation, expected_transform.translation, rtol=self.tolerance,
                                     atol=self.tolerance))
 
+    def test_rotate_around(self):
+        # Define a rotation of 90 degrees around the z-axis at the origin
+        rot = SO3.from_euler(0, 0, np.pi / 2)
+        other = SE3(rot, np.array([0, 0, 0]))
+
+        # Define a point at (1, 0, 0)
+        point = SE3(SO3(np.eye(3)), np.array([1, 0, 0]))
+
+        # Rotate the point around the origin
+        result = point.rotate_around(other)
+
+        # Check if the result is correct
+        np.testing.assert_almost_equal(result.translation, np.array([0, 1, 0]))
+
     def test_relative_to(self):
         # Define transforms
         origin = SE3(SO3.from_euler(0, 0, 0), np.array([0, 0, 0]))
         A = SE3.from_euler_and_translation(np.pi / 4, np.pi / 4, np.pi / 4, 1, 2, 3)
         B = SE3.from_euler_and_translation(np.pi / 2, np.pi / 2, np.pi / 2, 4, 5, 6)
-    
+
         # Test relative_to
         A_relative_to_B = A.relative_to(B)
         expected_relative = B.inverse() * A
