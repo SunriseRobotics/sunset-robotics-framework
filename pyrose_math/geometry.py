@@ -82,6 +82,10 @@ class SO3:
         roll, pitch, yaw = self.to_euler()
         return {"ROLL": roll, "PITCH": pitch, "YAW": yaw}
 
+    def __add__(self, other):
+        if not isinstance(other, SO3):
+            raise TypeError("Other must be an SO3 instance")
+
 
 class SE3:
     """
@@ -180,6 +184,8 @@ class SE3:
         result = other * rotated
 
         return result
+
+
 def matrix_exponential(mat):
     """
     Compute the matrix exponential using a power series.

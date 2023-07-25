@@ -97,16 +97,7 @@ class Scheduler:
             except IndexError:
                 if self.debug:
                     print("Simulation is over, no more messages to read")
-        if not (self.root_command is None) and not self.root_command.first_run_occurred:
-            self.root_command.first_run()
 
-        self.advance_command()
-
-        # Check if root_command is still not None after advancing
-        if self.root_command is not None:
-            self.root_command.periodic()
-        else:
-            pass
 
         all_logged_messages = None
 
@@ -143,6 +134,17 @@ class Scheduler:
         # often topics are also subscribers.  All topics inherit from subscriber
         for topic in self.topics:
             topic.periodic()
+
+        if not (self.root_command is None) and not self.root_command.first_run_occurred:
+            self.root_command.first_run()
+
+        self.advance_command()
+
+        # Check if root_command is still not None after advancing
+        if self.root_command is not None:
+            self.root_command.periodic()
+        else:
+            pass
 
         if self.enable_coms:
             send_data_to_server(self.client_socket, self.server_address, stored_messages_txt)
