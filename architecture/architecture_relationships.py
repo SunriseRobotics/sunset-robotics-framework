@@ -115,6 +115,8 @@ class Command(ABC):
         else:
             raise TypeError("next_command must be an instance of Command")
 
+        return self
+
 
 class DynamicCommand(Command, ABC):
     def __init__(self, subscribers: list):
