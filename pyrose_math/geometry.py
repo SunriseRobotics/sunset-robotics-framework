@@ -55,6 +55,11 @@ class SO3:
         R = R_z @ R_y @ R_x
         return cls(R)
 
+    @classmethod
+    def from_topic_message(cls, message):
+        roll, pitch, yaw = message["ROLL"], message["PITCH"], message["YAW"]
+        return cls.from_euler(roll, pitch, yaw)
+
     def __mul__(self, other):
         if isinstance(other, SO3):
             return SO3(np.dot(self.rotation_matrix, other.rotation_matrix))  # order is important
@@ -114,7 +119,7 @@ class SE3:
         tx, ty, tz = message["X"], message["Y"], message["Z"]
         rotation = SO3.from_euler(roll, pitch, yaw)
         translation = np.array([tx, ty, tz])
-        return cls(rotation,translation)
+        return cls(rotation, translation)
 
     def __mul__(self, other):
         if isinstance(other, SE3):
@@ -182,7 +187,6 @@ class SE3:
         roll, pitch, yaw = self.rotation.to_euler()
         x, y, z = self.translation[0], self.translation[1], self.translation[2]
         return {"X": x, "Y": y, "Z": z, "ROLL": roll, "PITCH": pitch, "YAW": yaw}
-
 
     def rotate_around(self, other: "SE3"):
         """
