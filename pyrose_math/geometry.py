@@ -56,7 +56,7 @@ class SO3:
         return cls(R)
 
     @classmethod
-    def from_topic_message(cls, message):
+    def from_message_dict(cls, message):
         roll, pitch, yaw = message["ROLL"], message["PITCH"], message["YAW"]
         return cls.from_euler(roll, pitch, yaw)
 
