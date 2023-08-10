@@ -108,6 +108,14 @@ class SE3:
         translation = np.array([tx, ty, tz])
         return cls(rotation, translation)
 
+    @classmethod
+    def from_message_dict(cls, message):
+        roll, pitch, yaw = message["ROLL"], message["PITCH"], message["YAW"]
+        tx, ty, tz = message["X"], message["Y"], message["Z"]
+        rotation = SO3.from_euler(roll, pitch, yaw)
+        translation = np.array([tx, ty, tz])
+        return cls(rotation,translation)
+
     def __mul__(self, other):
         if isinstance(other, SE3):
             rotation = self.rotation * other.rotation
@@ -174,6 +182,7 @@ class SE3:
         roll, pitch, yaw = self.rotation.to_euler()
         x, y, z = self.translation[0], self.translation[1], self.translation[2]
         return {"X": x, "Y": y, "Z": z, "ROLL": roll, "PITCH": pitch, "YAW": yaw}
+
 
     def rotate_around(self, other: "SE3"):
         """
