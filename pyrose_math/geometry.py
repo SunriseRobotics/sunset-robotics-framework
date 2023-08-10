@@ -76,6 +76,12 @@ class SO3:
         pitch = np.arctan2(-R[2, 0], np.sqrt(R[0, 0] ** 2 + R[1, 0] ** 2))
         roll = np.arctan2(R[2, 1], R[2, 2])
 
+        # Normalize the yaw to be in the range [-pi, pi]
+        if yaw > np.pi:
+            yaw -= 2 * np.pi
+        elif yaw < -np.pi:
+            yaw += 2 * np.pi
+
         return roll, pitch, yaw
 
     def to_message_dict(self):
