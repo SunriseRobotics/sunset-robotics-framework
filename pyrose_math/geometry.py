@@ -60,6 +60,11 @@ class SO3:
         roll, pitch, yaw = message["ROLL"], message["PITCH"], message["YAW"]
         return cls.from_euler(roll, pitch, yaw)
 
+    @classmethod
+    def from_message_dictXYZ(cls, message):
+        roll, pitch, yaw = message["X"], message["Y"], message["Z"]
+        return cls.from_euler(roll, pitch, yaw)
+
     def __mul__(self, other):
         if isinstance(other, SO3):
             return SO3(np.dot(self.rotation_matrix, other.rotation_matrix))  # order is important
