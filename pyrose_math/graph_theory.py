@@ -57,6 +57,8 @@ def is_cycle_present(connected_topics: list) -> bool:
     hare = connected_topics[0]
 
     while True:
+        # TODO: this is horrible 
+        return False
 
         if not isinstance(hare, Topic):
             return False
