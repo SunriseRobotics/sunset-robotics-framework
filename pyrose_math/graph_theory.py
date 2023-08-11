@@ -58,6 +58,9 @@ def is_cycle_present(connected_topics: list) -> bool:
 
     while True:
 
+        if not isinstance(hare, Topic):
+            return False
+
         if len(tortoise.subscribers) == 0:
             # if the tortoise has gotten to the end with no remaining subscribers, then there is no cycle
             return False
