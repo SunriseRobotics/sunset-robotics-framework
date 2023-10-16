@@ -1,11 +1,13 @@
 import numpy as np
-import json 
+import json
 import re
+
 
 def split_outside_brackets(s, delimiter=','):
     # This regex pattern will split the string correctly:
     pattern = r',\s*(?![^{}]*})'
     return re.split(pattern, s)
+
 
 def dump_file_contents(file_name: str):
     """
@@ -36,7 +38,6 @@ def parse_line(line: str):
         return time, message
     else:
         return None
-    
 
 
 def construct_dictionary_of_messages_vs_time(time_stamps, messages):
@@ -61,8 +62,6 @@ def get_message_at_time(time, dictionary_of_messages_vs_time):
         message_as_dict[key][2] = float(message_as_dict[key][2])
 
     return message_as_dict
-
-
 
 
 if __name__ == "__main__":

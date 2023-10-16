@@ -34,6 +34,7 @@ class Scheduler:
         self.replay_start_time = 0
         self.initial_time_of_log = 0
         self.first_sim_run = True
+
     def initialize(self):
 
         self.has_initialize_been_called = True
@@ -62,7 +63,6 @@ class Scheduler:
             self.read_topics = topicLogUtil.construct_dictionary_of_messages_vs_time(self.time_stamps,
                                                                                      messages_contents)
             self.replay_start_time = time.time()
-
 
         if self.enable_coms:
             self.client_socket, self.server_address = start_client()
@@ -97,7 +97,6 @@ class Scheduler:
             except IndexError:
                 if self.debug:
                     print("Simulation is over, no more messages to read")
-
 
         all_logged_messages = None
 
