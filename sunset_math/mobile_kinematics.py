@@ -1,4 +1,4 @@
-from pyrose_math.geometry import SE3, SO3
+from sunset_math.geometry import SE3, SO3
 
 
 class MecanumWheelSpeeds:

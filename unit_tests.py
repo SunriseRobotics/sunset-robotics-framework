@@ -1,6 +1,6 @@
-from pyrose_math.geometry import *
-from pyrose_math.TrapezoidProfile import *
-from pyrose_math.graph_theory import *
+from sunset_math.geometry import *
+from sunset_math.TrapezoidProfile import *
+from sunset_math.graph_theory import *
 from architecture.scheduler import Scheduler
 from architecture.architecture_relationships import *
 import unittest

@@ -161,6 +161,7 @@ def update(_):
 
 def main():
     while True:
+        print("enter main loop")
         try:
             # This will raise a socket.error exception if there's nothing to read
             data, address = server_socket.recvfrom(4096, socket.MSG_DONTWAIT)
@@ -201,7 +202,9 @@ if __name__ == "__main__":
     user_command_thread = threading.Thread(target=user_commands)
 
     server_thread.start()
+    print("main thread started")
     user_command_thread.start()
+    print("user input thread started")
 
     ani = FuncAnimation(fig, update, blit=True, interval=50, repeat=False, cache_frame_data=True)
     plt.show()
