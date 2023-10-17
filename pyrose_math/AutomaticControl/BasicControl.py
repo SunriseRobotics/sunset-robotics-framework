@@ -2,6 +2,11 @@ import numpy as np
 
 
 class PID:
+    """
+    Proportional-Integral-Derivative feedback controller
+
+    https://www.ctrlaltftc.com/the-pid-controller
+    """
     def __init__(self, kp, ki, kd):
         self.kP = kp
         self.kI = ki
@@ -21,6 +26,9 @@ class PID:
 
 
 class SimpleFeedforward:
+    """
+    Approximation of a DC Motor feedforward model that accounts for nonlinear static friction.
+    """
     def __init__(self, kv, ka, static=0):
         self.kV = kv
         self.kA = ka
@@ -38,4 +46,7 @@ def calculateDerivativePositionControl(kp, kv, ka):
 
 
 def derivativeFromFeedforward(kp: float, feedforward: SimpleFeedforward):
+    """
+    Given a tuned feedforward model of your plant, automatically derive the kD PID coefficient.
+    """
     return max(2 * np.sqrt(feedforward.kA * kp) - feedforward.kV, 0)

@@ -40,7 +40,9 @@ def find_connected_subgraphs(topics: list) -> list:
             if isinstance(subscriber, Topic):
                 dfs(subscriber)
 
+    # iterate through each topic
     for topic in topics:
+        # if the current topic has not yet been encountered, then we should search it and find any of its connections.
         if topic not in visited:
             subgraph = []
             dfs(topic)
@@ -91,6 +93,9 @@ def is_cycle_present(connected_topics: list) -> bool:
 
 
 def cycle_is_present_in_any(all_topics: list) -> bool:
+    """
+    Returns true if a cycle is present in any set of topics thus a circular dependency exists.
+    """
     subgraphs = find_connected_subgraphs(all_topics)
     for subgraph in subgraphs:
         if is_cycle_present(subgraph):
@@ -99,6 +104,9 @@ def cycle_is_present_in_any(all_topics: list) -> bool:
 
 
 def generate_network_graph(topics, subscribers):
+    """
+    Visualizing the network structure of your system is useful for robotics applications.  Pass in your nodes to this function to auto generate a graphx / matplotlib image.
+    """
     import networkx as nx
     import matplotlib.pyplot as plt
     G = nx.DiGraph()

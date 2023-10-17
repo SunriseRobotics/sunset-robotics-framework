@@ -2,6 +2,15 @@ import numpy as np
 
 
 class Quaternion:
+    """
+    Unit quaternion used for representing 3D rotational transformations in a continuous manner.
+
+    Advised to use this over Euler representation for systems that need precision in 3D space due to Quaternions
+    being immune to gimbal lock / singularities.
+
+    Interchangeable with the SO3 object which is isomorphic to SO3.
+
+    """
     def __init__(self, w, x, y, z):
         self.w = w
         self.x = x
@@ -37,6 +46,11 @@ class Quaternion:
 
 
 class SO3:
+    """
+    The Special Orthogonal (3) group used to represent 3D transformations with the premises of group theory.
+
+    Is isomorphic to the unit quaternion so sensors that utilize quaternions are advised.
+    """
     def __init__(self, rotation_matrix):
         self.rotation_matrix = rotation_matrix
 
@@ -57,16 +71,26 @@ class SO3:
 
     @classmethod
     def from_message_dict(cls, message):
+        """
+        construct from a dictionary containing ROLL,PITCH,YAW euler angles (radians )
+        Is isomorphic to @{from_message_dictXYZ}
+        """
         roll, pitch, yaw = message["ROLL"], message["PITCH"], message["YAW"]
         return cls.from_euler(roll, pitch, yaw)
 
     @classmethod
     def from_message_dictXYZ(cls, message):
+        """
+        construct from a dictionary containing X,Y,Z euler angles (radians )
+        """
         roll, pitch, yaw = message["X"], message["Y"], message["Z"]
         return cls.from_euler(roll, pitch, yaw)
 
     @classmethod
     def from_message_dictQuaternion(cls, message):
+        """
+        Construct from a python dict containing W,X,Y,Z
+        """
         w, x, y, z = message["W"], message["X"], message["Y"], message["Z"]
         q = Quaternion(w,x,y,z)
         return cls.from_quaternion(q)
@@ -78,14 +102,22 @@ class SO3:
             return np.dot(self.rotation_matrix, other)
 
     def inverse(self):
+        """
+        the rotation that undoes the current rotation if applied.
+        """
         return SO3(self.rotation_matrix.T)
 
     def rotate(self, vec):
+        """
+        Rotate a 3D pose vector by this.
+        """
         return np.dot(self.rotation_matrix, vec)
 
     def to_euler(self):
         """
         Convert the rotation matrix to Euler angles using the 'zyx' convention.
+
+        Calculations after this point no longer have the guarantees from quaternions / SO3.
         """
         R = self.rotation_matrix
         yaw = np.arctan2(R[1, 0], R[0, 0])
@@ -101,14 +133,17 @@ class SO3:
         return roll, pitch, yaw
 
     def to_message_dict(self):
+        """
+        to a dictionary format in EULER angles for ease of use.
+        """
         roll, pitch, yaw = self.to_euler()
         return {"ROLL": roll, "PITCH": pitch, "YAW": yaw}
 
-    def __add__(self, other):
-        if not isinstance(other, SO3):
-            raise TypeError("Other must be an SO3 instance")
     @classmethod
     def from_quaternion(cls, quaternion):
+        """
+        Convert from a quaternion object to SO3, preserves motion.
+        """
         w, x, y, z = quaternion.w, quaternion.x, quaternion.y, quaternion.z
         R = np.array([
             [1 - 2 * y ** 2 - 2 * z ** 2, 2 * x * y - 2 * z * w, 2 * x * z + 2 * y * w],
@@ -119,15 +154,26 @@ class SO3:
 
 class SE3:
     """
-    Lie group to represent a 3D spatial transformation from a given reference frame
+    Lie group to represent a 3D spatial transformation from a given reference frame.
+
+    Effectively a 3D spacial transformation that includes position and orientation in three dimensions.
+
+    orientation is derived from SO3.
     """
 
     def __init__(self, rotation: SO3, translation):
+        """
+        Rotation is an SO3 instance.
+        Translation is a 3D numpy vector.
+        """
         self.rotation = rotation
         self.translation = translation
 
     @classmethod
     def from_euler_and_translation(cls, roll, pitch, yaw, tx, ty, tz):
+        """
+        from euler and raw translation generate an SE3 instance.
+        """
         rotation = SO3.from_euler(roll, pitch, yaw)
         translation = np.array([tx, ty, tz])
         return cls(rotation, translation)

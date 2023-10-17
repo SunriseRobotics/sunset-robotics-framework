@@ -1,13 +1,11 @@
 from math import fabs
 from math import sqrt
 
-max_accel = 30
-max_decel = 30
-max_vel = 50
-targetPosition = 300
-
 
 def signum(x):
+    """
+    determine the sign of X
+    """
     if x > 0:
         return 1
     elif x < 0:
@@ -17,10 +15,17 @@ def signum(x):
 
 
 def epsilonEquals(a, b, epsilon):
+    """
+    determine if a and b are close enough.
+    """
     return fabs(a - b) < epsilon
 
 
 class MotionState:
+    """
+    represent a 1 dimensional kinematic state.
+    """
+
     def __init__(self, x, v, a):
         '''
         position, velocity, and acceleration at a given time step
@@ -34,11 +39,9 @@ class MotionState:
 
 
 class TrapezoidProfile:
-    '''
-    
-    Trapezoid motion profile with support for asymmetric acceleration / deceleration curves.  
-
-    '''
+    """
+    Trapezoid motion profile with support for asymmetric acceleration / deceleration curves.
+    """
 
     def __init__(self, max_accel, max_decel, max_vel, targetPosition):
         self.max_accel = max_accel
@@ -54,17 +57,16 @@ class TrapezoidProfile:
         self.direction = signum(self.targetPosition)
 
     def calculate(self):
-        '''
+        """
         Calculate the motion profile for the robot
-        '''
+        """
         self.dt1 = fabs(self.max_vel) / fabs(self.max_accel)
         self.dt3 = fabs(self.max_vel) / fabs(self.max_decel)
         averageDt = (self.dt1 + self.dt3) / 2
         self.dt2 = fabs(self.targetPosition) / fabs(self.max_vel) - averageDt
-        if (self.dt2 < 0):
+        if self.dt2 < 0:
             self.dt2 = 0
-
-            if (fabs(self.max_accel) > fabs(self.max_decel)):
+            if fabs(self.max_accel) > fabs(self.max_decel):
                 self.max_accel = fabs(self.max_decel)
             else:
                 self.max_decel = fabs(self.max_accel)
@@ -106,6 +108,10 @@ class TrapezoidProfile:
 
 
 if __name__ == "__main__":
+    max_accel = 30
+    max_decel = 30
+    max_vel = 50
+    targetPosition = 300
     profile = TrapezoidProfile(max_accel, max_decel, max_vel, targetPosition)
 
     import matplotlib.pyplot as plt

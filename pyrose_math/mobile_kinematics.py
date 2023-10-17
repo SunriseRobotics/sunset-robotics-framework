@@ -2,6 +2,9 @@ from pyrose_math.geometry import SE3, SO3
 
 
 class MecanumWheelSpeeds:
+    """
+    Wheel speeds for a mecanum drive holonomic mobile robot
+    """
     def __init__(self, frontLeft, frontRight, backLeft, backRight):
         self.frontLeft = frontLeft
         self.frontRight = frontRight
@@ -10,13 +13,24 @@ class MecanumWheelSpeeds:
 
 
 class DifferentialDriveWheelSpeeds:
+    """
+    Wheel speeds for a differential steering mobile robot.
+
+    If using multiple wheels on each side, average each wheel on that side to estimate that sides corresponding value.
+    """
     def __init__(self, left, right):
         self.left = left
         self.right = right
 
 
 class MecanumKinematics:
+    """
+    Convert from between twists and wheel velocities for a mecanum drive robot.
+    """
     def __init__(self, track_width):
+        """
+        track width must be in the same units as your wheel velocity.
+        """
         self.track_width = track_width
 
     def wheelVelocityToTwistRobot(self, ws: MecanumWheelSpeeds) -> tuple:
@@ -35,7 +49,13 @@ class MecanumKinematics:
 
 
 class DifferentialDriveKinematics:
+    """
+    Convert from between twists and wheel velocities for a differential drive robot.
+    """
     def __init__(self, track_width):
+        """
+        track width must be in the same units as your wheel velocity.
+        """
         self.track_width = track_width
 
     def wheelVelocityToTwistRobot(self, ws: DifferentialDriveWheelSpeeds) -> tuple:

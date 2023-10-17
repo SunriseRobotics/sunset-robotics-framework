@@ -9,19 +9,21 @@ class Subscriber(ABC):
     These could be different components or subsystems of your robot.
     For example, you might have a MotorController class that's responsible for driving the robot's motors.
     This class could subscribe to topics that provide it with new motor commands.
+
+    Basically, anything that only receives information and does not send information to other pyROSe topics.
     """
 
     def __init__(self, is_sim, subscriber_name="Abstract Subscriber"):
         super().__init__()
-        # name of topic to message pair 
+        # name of a topic to a message pair
         self.messages = {}
         self.is_sim = is_sim
         self.name = subscriber_name
 
     def periodic(self):
-        '''
+        """
         Executes periodic tasks for the subscriber, using a different method for simulation mode
-        '''
+        """
         if self.is_sim:
             self.subscriber_periodic_sim()
         else:
@@ -77,6 +79,9 @@ class Message:
 
 
 class Command(ABC):
+    """
+    Nonblocking command that will be executed by the scheduler.  Effectively a linked list like structure of commands to decide the order.
+    """
     def __init__(self, subscribers: list):
         self.dependent_subscribers = subscribers
         self.next_command = None
@@ -89,14 +94,24 @@ class Command(ABC):
 
     @abstractmethod
     def first_run_behavior(self):
+        """
+        User implemented first run behavior, only runs once. Used for things like initial conditions.
+        """
         pass
 
     @abstractmethod
     def periodic(self):
+        """
+        Once the first run has occurred, all proceeding calls will occur here. This will be called in a loop and should
+        be nonblocking.
+        """
         pass
 
     @abstractmethod
     def is_complete(self) -> bool:
+        """
+        Determine if the command is complete for the schedule to proceed to the next command.
+        """
         return False
 
     def setNext(self, next_command: 'Command'):
@@ -104,21 +119,29 @@ class Command(ABC):
         Set the next command to be executed once this command is complete.
         If this command already has a next command, append the new command to the end of the chain.
         """
-        if isinstance(next_command, Command):
-            if self.next_command is None:
-                self.next_command = next_command
-            else:
-                last_command = self.next_command
-                while last_command.next_command is not None:
-                    last_command = last_command.next_command
-                last_command.next_command = next_command
-        else:
+        # guard against non-commands being passed in.
+        if not isinstance(next_command, Command):
             raise TypeError("next_command must be an instance of Command")
+
+        if self.next_command is None:
+            self.next_command = next_command
+        else:
+            last_command = self.next_command
+            while last_command.next_command is not None:
+                last_command = last_command.next_command
+            last_command.next_command = next_command
 
         return self
 
 
 class DynamicCommand(Command, ABC):
+    """
+    Sometimes we want commands to determine at runtime what the next command should be, such as reacting to changing
+    conditions or adversaries.
+
+    This modified command allows for a dictionary to store anonymous boolean function / command pairs to decide which
+    command should go next; this also decides the is_complete flag.
+    """
     def __init__(self, subscribers: list):
         super().__init__(subscribers)
         self.conditions = []
@@ -129,6 +152,9 @@ class DynamicCommand(Command, ABC):
         self.command_condition_pairs[boolean_supplier] = nextCommand
 
     def is_complete(self) -> bool:
+        """
+        Determines if the command is complete by assessing the key value pairs the implementor should have supplied.
+        """
         for condition in self.conditions:
             if condition():
                 self.setNext(self.command_condition_pairs[condition])
@@ -137,8 +163,15 @@ class DynamicCommand(Command, ABC):
 
 
 class ParallelCommand(Command):
+    """
+    Since commands are supposed to be implemented as nonblocking functions, you can approximately run them in parallel.
+    """
     def __init__(self, commands, name="Parallel Command"):
-        # The list of commands to run in parallel
+        """
+        Commands is a list like iterable which contains the commands you want to run in parallel.
+
+        BE CAREFUL TO MAKE SURE IT IS OKAY FOR YOUR SYSTEM TO RUN THESE COMMANDS IN PARALLEL.
+        """
         self.commands = commands
         self.name = name
         self.first_run_occurred = False
@@ -163,7 +196,18 @@ class ParallelCommand(Command):
 
 
 class DelayCommand(Command):
+    """
+    If we want to delay execution of commands without blocking our subsystem scheduler, use this!
+    """
     def __init__(self, delay_time_s, timer: 'SystemTimeTopic', name="Delay Command"):
+        """
+        Time should be in seconds with this implementation.  The command will do nothing until the timer completes.
+
+        Use this command instead of a while loop in a periodic command to prevent blocking.
+
+        the timer 'SystemTimeTopic' instance will be a member variable of your scheduler.
+        This allows log replay to work correctly. DO NOT MAKE AN INSTANCE OF YOUR OWN.
+        """
         super().__init__([timer])
         self.start_time = None
         self.delay_time = delay_time_s
@@ -190,6 +234,10 @@ class Topic(Subscriber):
     the MotorController would update the robot's speed accordingly.
     Similarly, sensor topics can publish data
     such as images from a camera, distance from an ultrasonic sensor, etc.
+
+    Anything that you can NOT create programmatically should have the "replace_message_with_log" flag set to true.
+
+    Similar to a subsystem in frameworks such as WPILIB.
     """
 
     def __init__(self, name="Abstract Topic", is_sim=False):
@@ -210,13 +258,15 @@ class Topic(Subscriber):
 
     @abstractmethod
     def generate_messages_periodic(self):
-        '''
-        
-        Topics are things like speeds a motor controller needs to reach or velocity estimated from an encoder.  
+        """
 
-        here is where you define how your messages are formatted.  
-        
-        '''
+        Topics are things like speeds a motor controller needs to reach or velocity estimated from an encoder.
+
+        here is where you define how your messages are formatted.
+
+        messages are python dictionaries that you will return from this function.
+
+        """
         pass
 
     def publish_periodic(self) -> Tuple[Message, float, float]:
@@ -252,6 +302,8 @@ class SystemTimeTopic(Topic):
     Lots of calculations rely on accurate timing information, many of which can be the source of issues that need to
     be debugged. Instead of using the python time module directly, pyROSe users are expected to utilize this topic.
     This enables accurate timing information to be recorded and then replayed in the pyROSe simulation mode.
+
+    Your scheduler will provide an instance of this topic, thus you should not have to instantiate it yourself.
     """
 
     def __init__(self, topic_name="SystemTime", is_sim=False):
