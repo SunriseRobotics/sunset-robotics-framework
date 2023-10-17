@@ -65,6 +65,12 @@ class SO3:
         roll, pitch, yaw = message["X"], message["Y"], message["Z"]
         return cls.from_euler(roll, pitch, yaw)
 
+    @classmethod
+    def from_message_dictQuaternion(cls, message):
+        w, x, y, z = message["W"], message["X"], message["Y"], message["Z"]
+        q = Quaternion(w,x,y,z)
+        return cls.from_quaternion(q)
+
     def __mul__(self, other):
         if isinstance(other, SO3):
             return SO3(np.dot(self.rotation_matrix, other.rotation_matrix))  # order is important
