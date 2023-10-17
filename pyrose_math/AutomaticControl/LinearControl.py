@@ -13,17 +13,30 @@ class PID:
         self.kD = kd
         self.previous_error = 0
         self.first_run = True
+        self.integral = 0
 
     def update(self, reference: float, estimated_state: float, timedelta: float):
         error = reference - estimated_state
         derivative = (error - self.previous_error) / timedelta
+
+        integral_change = (error + self.previous_error) / 2
+        integral_change *= timedelta
+        self.integral += integral_change
+
         if self.first_run:
-            derivative = 0
-        integral = (error + self.previous_error) / 2
-        integral *= timedelta
+            # prevent derivative kick
+            self.first_run = False
+            return self.kP
 
-        return self.kP * error + self.kI * integral + self.kD * derivative
+        return self.kP * error + self.kI * self.integral + self.kD * derivative
 
+    def reset(self):
+        """
+        Calling this upon set point changes can increase stability in some systems due to our anti-kick feature.
+        """
+        self.integral = 0
+        self.first_run = True
+        self.previous_error = 0
 
 class SimpleFeedforward:
     """
