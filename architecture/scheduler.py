@@ -183,11 +183,12 @@ class Scheduler:
             self.root_command.first_run()
         elif not (self.root_command is None) and self.root_command.first_run_occurred:
             # TODO determine if this prevents race conditions -- delete once validated.  Unit tests still pass...
-            # check if the command is done,
-            self.advance_command()
             # Check if root_command is still not None after advancing
             if self.root_command is not None:
                 self.root_command.periodic()
+                # check if the command is done,
+                self.advance_command()
+
             else:
                 pass
 
