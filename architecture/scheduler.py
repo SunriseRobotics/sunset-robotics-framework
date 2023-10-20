@@ -181,7 +181,7 @@ class Scheduler:
         # if we have a command and have not started running it, then start!
         if not (self.root_command is None) and not self.root_command.first_run_occurred:
             self.root_command.first_run()
-        elif not (self.root_command is None):
+        elif not (self.root_command is None) and self.root_command.first_run_occurred:
             # TODO determine if this prevents race conditions -- delete once validated.  Unit tests still pass...
             # check if the command is done,
             self.advance_command()
