@@ -2,6 +2,7 @@ from math import fabs
 from math import sqrt
 
 
+
 def signum(x):
     """
     determine the sign of X
@@ -108,10 +109,10 @@ class TrapezoidProfile:
 
 
 if __name__ == "__main__":
-    max_accel = 30
-    max_decel = 30
-    max_vel = 50
-    targetPosition = 300
+    max_accel = 0.25
+    max_decel = -0.25
+    max_vel = 0.5
+    targetPosition = -0.9472881576011741
     profile = TrapezoidProfile(max_accel, max_decel, max_vel, targetPosition)
 
     import matplotlib.pyplot as plt

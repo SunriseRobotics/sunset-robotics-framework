@@ -139,6 +139,10 @@ class SO3:
         roll, pitch, yaw = self.to_euler()
         return {"ROLL": roll, "PITCH": pitch, "YAW": yaw}
 
+    def __str__(self):
+        roll, pitch, yaw = self.to_euler()
+        return f"ROLL: {roll}, PITCH: {pitch}, YAW: {yaw}"
+
     @classmethod
     def from_quaternion(cls, quaternion):
         """
@@ -269,6 +273,10 @@ class SE3:
 
         return result
 
+    def __str__(self):
+        return f"pose(X: {self.translation[0]} Y: {self.translation[1]} Z: {self.translation[2]}) " \
+            + self.rotation.__str__()
+
 
 def matrix_exponential(mat):
     """
@@ -297,3 +305,4 @@ def matrix_exponential(mat):
         mat_power = np.dot(mat_power, mat)
 
     return result
+
