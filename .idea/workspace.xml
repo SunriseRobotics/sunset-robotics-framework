@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0bda284-baa0-4355-8f5c-4ef2507f07ba" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/visualizer_win.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/network_constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/network_constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyROSe_visualizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyROSe_visualizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/send_main_to_pi.py" beforeDir="false" afterPath="$PROJECT_DIR$/send_main_to_pi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +39,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
@@ -54,7 +57,7 @@
       <recent name="$PROJECT_DIR$/pyrose_math" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.test_motor">
     <configuration name="test_motor" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pyros" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -147,6 +150,16 @@
       <workItem from="1688427894647" duration="20899000" />
       <workItem from="1688870588629" duration="8482000" />
       <workItem from="1689010593484" duration="4134000" />
+      <workItem from="1698080457067" duration="8124000" />
+      <workItem from="1698355815140" duration="815000" />
+      <workItem from="1698427262343" duration="5933000" />
+      <workItem from="1698510828806" duration="21000" />
+      <workItem from="1698725656759" duration="4120000" />
+      <workItem from="1699063707494" duration="20000" />
+      <workItem from="1699064282392" duration="926000" />
+      <workItem from="1700933013445" duration="4286000" />
+      <workItem from="1702237463017" duration="1080000" />
+      <workItem from="1704170763523" duration="82000" />
     </task>
     <servers />
   </component>
@@ -164,18 +177,30 @@
       </map>
     </option>
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/roboclaw.py</url>
+          <line>785</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pyros$pyROS_visualizer.coverage" NAME="pyROS_visualizer Coverage Results" MODIFIED="1687806608860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyros$animation.coverage" NAME="animation Coverage Results" MODIFIED="1687887051002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Library/Python/3.8/lib/python/site-packages/matplotlib" />
-    <SUITE FILE_PATH="coverage/pyros$triad.coverage" NAME="triad Coverage Results" MODIFIED="1687886919125" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/visualization" />
-    <SUITE FILE_PATH="coverage/pyros$main.coverage" NAME="main Coverage Results" MODIFIED="1688919033452" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pyros$geometry.coverage" NAME="geometry Coverage Results" MODIFIED="1688445226435" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pyrose_math" />
-    <SUITE FILE_PATH="coverage/pyros$.coverage" NAME=" Coverage Results" MODIFIED="1688484668062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$.coverage" NAME=" Coverage Results" MODIFIED="1697562793708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyros$VisualizerGeometry.coverage" NAME="VisualizerGeometry Coverage Results" MODIFIED="1688139792884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/visualization" />
-    <SUITE FILE_PATH="coverage/pyros$scheduler.coverage" NAME="scheduler Coverage Results" MODIFIED="1688671991232" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/architecture" />
-    <SUITE FILE_PATH="coverage/pyros$pyROSe_visualizer.coverage" NAME="pyROSe_visualizer Coverage Results" MODIFIED="1689014085255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pyros$test_motor.coverage" NAME="test_motor Coverage Results" MODIFIED="1688870604641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$test_motor.coverage" NAME="test_motor Coverage Results" MODIFIED="1696008745463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyros$send_main_to_pi.coverage" NAME="send_main_to_pi Coverage Results" MODIFIED="1689003423501" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$pyROS_visualizer.coverage" NAME="pyROS_visualizer Coverage Results" MODIFIED="1687806608860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$triad.coverage" NAME="triad Coverage Results" MODIFIED="1687886919125" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/visualization" />
+    <SUITE FILE_PATH="coverage/pyros$main.coverage" NAME="main Coverage Results" MODIFIED="1696614955338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyros$TrapezoidProfile.coverage" NAME="TrapezoidProfile Coverage Results" MODIFIED="1697779993740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sunset_math" />
+    <SUITE FILE_PATH="coverage/pyros$geometry.coverage" NAME="geometry Coverage Results" MODIFIED="1691615837786" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pyrose_math" />
+    <SUITE FILE_PATH="coverage/pyros$scheduler.coverage" NAME="scheduler Coverage Results" MODIFIED="1696010525969" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/architecture" />
+    <SUITE FILE_PATH="coverage/pyros$pyROSe_visualizer.coverage" NAME="pyROSe_visualizer Coverage Results" MODIFIED="1696616325403" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyros$networkx_test.coverage" NAME="networkx_test Coverage Results" MODIFIED="1687877839444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
