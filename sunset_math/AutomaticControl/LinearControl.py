@@ -62,4 +62,4 @@ def derivativeFromFeedforward(kp: float, feedforward: SimpleFeedforward):
     """
     Given a tuned feedforward model of your plant, automatically derive the kD PID coefficient.
     """
-    return max(2 * np.sqrt(feedforward.kA * kp) - feedforward.kV, 0)
+    return calculateDerivativePositionControl(kp, feedforward.kV, feedforward.kA)

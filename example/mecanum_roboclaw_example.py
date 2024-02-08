@@ -1,4 +1,3 @@
-from roboclaw import Roboclaw
 from architecture.scheduler import Scheduler
 from architecture.architecture_relationships import Command, DelayCommand, Topic, Subscriber, Message
 import numpy as np
@@ -346,6 +345,7 @@ def main():
     # determine if we are running on the robot based on if the roboclaws exist.
     is_running_on_robot = True
     try:
+        from roboclaw import Roboclaw
         roboclaw1 = Roboclaw('/dev/ttyACM1', BAUD)
         roboclaw2 = Roboclaw('/dev/ttyACM0', BAUD)
         roboclaw1.Open()
